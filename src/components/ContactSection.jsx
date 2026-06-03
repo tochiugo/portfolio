@@ -33,6 +33,13 @@ export function ContactSection() {
         ))}
       </div>
 
+      <div className="mt-8 flex justify-center">
+        <a href="/resume.html" target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-sm border border-[#00E87A]/40 text-[#00E87A] hover:bg-[#00E87A]/10 transition-colors">
+          <span>⬇</span> View / Download Résumé
+        </a>
+      </div>
+
       <div className="mt-8 flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
         {personal.targetRoles.map((r) => (
           <span key={r} className="font-mono text-[11px] px-3 py-1.5 rounded-full border border-white/10 text-zinc-400">{r}</span>

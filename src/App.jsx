@@ -114,6 +114,7 @@ export default function App() {
           <div className="flex flex-wrap gap-4 items-center">
             <a href={personal.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zinc-500 hover:text-[#00E87A]">LinkedIn</a>
             <a href={personal.github} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zinc-500 hover:text-[#00E87A]">GitHub</a>
+            <a href="/resume.html" target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zinc-500 hover:text-[#00E87A]">Résumé</a>
             <a href={`mailto:${personal.email}`} className="font-mono text-xs text-[#00E87A] border border-[#00E87A]/30 px-3 py-1 rounded-full hover:bg-[#00E87A]/10">Hire me →</a>
           </div>
         </div>

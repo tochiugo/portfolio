@@ -61,6 +61,7 @@ function classifyIntent(text) {
   if (has('project', 'built', 'what has he', 'what did he', 'portfolio', 'systems', 'show me')) return { intent: 'projects' };
   if (has('skill', 'tech', 'stack', 'language', 'tools', 'technolog')) return { intent: 'tech' };
   if (has('hire', 'available', 'job', 'role', 'open to', 'recruit', 'looking', 'opportunity')) return { intent: 'hiring' };
+  if (has('resume', 'résumé', 'cv', 'download')) return { intent: 'resume' };
   if (has('contact', 'email', 'reach', 'phone', 'call', 'linkedin', 'github')) return { intent: 'contact' };
   if (has('location', 'where', 'los angeles', 'remote', 'relocat', 'based')) return { intent: 'location' };
   if (has('who', 'about', 'background', 'tochi', 'introduce', 'yourself')) return { intent: 'identity' };
@@ -150,8 +151,14 @@ function generateResponse({ intent, slug }) {
 
     case 'contact':
       return R(
-        `Reach ${personal.name.split(' ')[0]}:\n\n• Email: ${personal.email}\n• Phone: ${personal.phone}\n• LinkedIn: ${personal.linkedin.replace('https://', '')}\n• GitHub: ${personal.github.replace('https://', '')}\n\nEmail is fastest — usually a reply within a few hours.`,
-        ['Is he available to hire?', 'What roles is he targeting?', 'Where is he based?']
+        `Reach ${personal.name.split(' ')[0]}:\n\n• Email: ${personal.email}\n• Phone: ${personal.phone}\n• LinkedIn: ${personal.linkedin.replace('https://', '')}\n• GitHub: ${personal.github.replace('https://', '')}\n\nEmail is fastest — usually a reply within a few hours. A downloadable résumé is in the Contact section and the footer.`,
+        ['Is he available to hire?', 'View the résumé', 'Where is he based?']
+      );
+
+    case 'resume':
+      return R(
+        `${personal.name.split(' ')[0]}'s résumé is available right here — open **/resume.html** (linked in the Contact section and the footer) and use "Save as PDF / Print".\n\nIt covers the AI/automation projects (Polymarket Mission Control, SHARP, WitnessPro, the bot ecosystem), security lab experience, CompTIA Security+ and Google certificates, and work history. Honestly though — this whole site is the deeper proof; the résumé is just the one-page version.`,
+        ['Is he available to hire?', 'List all projects', 'How do I contact him?']
       );
 
     case 'location':
