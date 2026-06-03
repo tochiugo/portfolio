@@ -1,0 +1,60 @@
+{
+  "system": "Polymarket Mission Control",
+  "codename": "V12-53",
+  "mode": "public-dry-run",
+  "status": "online",
+  "version": "12.53.0",
+  "environment": "public-safe · dry-run · no live trading",
+  "boot_time": "2026-05-28T06:14:22Z",
+  "generated_at": "2026-06-02T17:55:00Z",
+  "last_heartbeat": "2026-06-02T17:55:00Z",
+  "heartbeat_interval_sec": 30,
+  "health": {
+    "state": "healthy",
+    "cycle_latency_ms": 214,
+    "feed_lag_ms": 86,
+    "error_rate_pct": 0.0,
+    "watchdog": "passing",
+    "data_feeds": ["binance.spot.ws", "polymarket.gamma", "polymarket.clob.ws"]
+  },
+  "counters": {
+    "markets_scanned": 184213,
+    "evaluations_processed": 902847,
+    "signals_generated": 1644,
+    "cycles_completed": 73118,
+    "open_positions": 0,
+    "uptime_label": "5d 11h 40m"
+  },
+  "strategies": [
+    { "name": "Latency-Arb", "state": "armed", "edge": "Binance leads Polymarket 2-55s" },
+    { "name": "Flash-Crash", "state": "watching", "edge": "Contrarian bounce on 0.27+ prob drop" },
+    { "name": "Late-Window", "state": "armed", "edge": "Mid + spot confirm in final 2 min" }
+  ],
+  "markets": [
+    { "label": "BTC 15m Up/Down", "spot": "—", "prob": 0.52, "state": "scanning" },
+    { "label": "BTC 5m Up/Down", "spot": "—", "prob": 0.49, "state": "scanning" },
+    { "label": "ETH 15m Up/Down", "spot": "—", "prob": 0.55, "state": "scanning" },
+    { "label": "ETH 5m Up/Down", "spot": "—", "prob": 0.47, "state": "watching" }
+  ],
+  "calibration": { "brier_score": 0.182, "trades_logged": 0, "note": "dry-run — paper router only" },
+  "recent_activity": [
+    "Heartbeat OK · cycle 73118 · 214ms",
+    "Scanned BTC 15m Up/Down — mid 0.52, spread 0.03",
+    "Latency-Arb: Binance Δ below entry threshold → skip",
+    "Late-Window armed for ETH 15m (T-minus 2m gate)",
+    "Position monitor: 0 open positions (dry-run)",
+    "Brier calibration refreshed → 0.182",
+    "Flash-Crash watch: no 0.27+ drop detected",
+    "Risk manager: exposure 0% of cap · kill-switch clear"
+  ],
+  "recent_logs": [
+    "[17:55:00] INFO  cycle=73118 scanned=4 evals=12 latency=214ms",
+    "[17:54:58] INFO  latency_arb btc15m delta=+18bps thr=+35bps action=skip",
+    "[17:54:57] INFO  gamma refresh ok markets=4 stale=0",
+    "[17:54:56] INFO  clob.ws heartbeat ok lag=86ms",
+    "[17:54:55] INFO  late_window eth15m arm gate=T-120s",
+    "[17:54:54] INFO  risk exposure=0.0% cap=ok killswitch=clear",
+    "[17:54:52] INFO  paper_router open=0 resolved_today=0 (dry-run)",
+    "[17:54:50] INFO  brier update score=0.182 n=0"
+  ]
+}

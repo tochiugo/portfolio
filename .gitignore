@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# secrets / env — never commit
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# vercel project linkage (contains org/project IDs)
+.vercel/
+
+# local stale-artifact backup (not for publishing)
+legacy_backup/
+
+# os / editor
+.DS_Store
+*.log
