@@ -41,10 +41,16 @@ export function EvidenceRepo() {
               </div>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-2">
-              {['View Screenshots', 'View Runtime Evidence', 'View Logs & Databases', 'View Engineering Artifacts'].map((a) => (
-                <div key={a} className="font-mono text-[11px] text-zinc-400 rounded-lg border border-white/10 bg-black/30 px-3 py-2 flex items-center gap-2">
-                  <span className="text-[#00E87A]">›</span> {a}
-                </div>
+              {[
+                ['View Screenshots', '#witnesspro'],
+                ['View Runtime Evidence', '#mission-control'],
+                ['View Logs & Databases', '#projects'],
+                ['View Engineering Artifacts', '#projects'],
+              ].map(([a, href]) => (
+                <a key={a} href={href}
+                  className="group font-mono text-[11px] text-zinc-400 rounded-lg border border-white/10 bg-black/30 px-3 py-2 flex items-center gap-2 hover:border-[#00E87A]/40 hover:text-[#00E87A] transition-colors">
+                  <span className="text-[#00E87A] group-hover:translate-x-0.5 transition-transform">›</span> {a}
+                </a>
               ))}
             </div>
             <p className="mt-4 font-mono text-[11px] text-zinc-600 leading-relaxed">
