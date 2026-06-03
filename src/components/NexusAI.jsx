@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { personal, missionControl, witnessPro, nexus, projects, evidenceRepo, techStack } from '../data/portfolio';
+import { personal, missionControl, witnessPro, about, socLab, experience, certifications, projects, evidenceRepo, techStack } from '../data/portfolio';
 
 // ATLAS — the portfolio's engineering assistant.
 // Client-side only · no API calls · no data leaves the browser.
@@ -55,7 +55,9 @@ function classifyIntent(text) {
   if (has('mission control', 'dashboard', 'live system', 'status', 'online', 'offline', 'heartbeat', 'uptime', 'dry run', 'dry-run')) return { intent: 'mission_control' };
   if (has('trading', 'bot', 'trade', 'strategy', 'strategies', 'risk', 'kelly', 'signal')) return { intent: 'trading' };
   if (has('witness', 'ios', 'iphone', 'swift', 'camera', 'mobile app', 'avfoundation', 'evidence vault')) return { intent: 'witnesspro' };
-  if (has('nexus eco', 'digital human', 'twin', 'body capture', 'confidential')) return { intent: 'nexus' };
+  if (has('soc', 'splunk', 'chronicle', 'siem', 'mitre', 'wireshark', 'kali', 'nmap', 'threat', 'incident', 'security analyst', 'detection', 'triage', 'home lab', 'homelab')) return { intent: 'soc' };
+  if (has('business', 'founder', 'ceo', 'company', 'llc', 'entrepreneur', 'meridian', 'tochiugo global', 'export', 'experience', 'work history', 'correctional')) return { intent: 'experience' };
+  if (has('cert', 'security+', 'comptia', 'google cyber', 'tryhackme', 'credential', 'education', 'ged', 'degree', 'qualified')) return { intent: 'certs' };
   if (has('architecture', 'how does it work', 'how do you build', 'design', 'how is it built', 'engineering decision')) return { intent: 'architecture' };
   if (has('evidence', 'proof', 'screenshot', 'logs', 'how do i know', 'verify', 'real')) return { intent: 'evidence' };
   if (has('project', 'built', 'what has he', 'what did he', 'portfolio', 'systems', 'show me')) return { intent: 'projects' };
@@ -75,8 +77,8 @@ function generateResponse({ intent, slug }) {
   switch (intent) {
     case 'greeting':
       return R(
-        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s engineering assistant.\n\nThis isn't a résumé site — it's a proof-driven platform. The homepage is a live operational dashboard for a Polymarket trading system; below it are a shipped iOS app, a 10-project ecosystem, and the evidence behind every claim.\n\nWhat do you want to dig into?`,
-        ['What is Mission Control?', 'Tell me about WitnessPro', 'List all the projects', 'Is Tochi available to hire?']
+        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s assistant.\n\nThis is a proof-driven platform. The homepage is a live trading dashboard; below it are a shipped iOS app, a home SOC lab, a 10-project ecosystem, his certifications, and his experience as a founder of two companies — all backed by real evidence.\n\nWhat do you want to dig into?`,
+        ['What is Mission Control?', 'Tell me about the SOC lab', 'What businesses has he founded?', 'What certifications?']
       );
 
     case 'identity':
@@ -103,10 +105,22 @@ function generateResponse({ intent, slug }) {
         ['What other projects exist?', 'Show me Mission Control', 'How is the evidence verified?', 'Is Tochi hireable?']
       );
 
-    case 'nexus':
+    case 'soc':
       return R(
-        `**${nexus.name}** — ${nexus.tagline}\n\n${nexus.summary}\n\nPublic-safe concepts shown: ${nexus.publicConcepts.join(', ')}.\nDeliberately withheld: ${nexus.withheld.join(', ')}.\n\nIt's a teaser by design — enough to convey direction, nothing sensitive.`,
-        ['Show me the shipped projects', 'Tell me about WitnessPro', 'What is Mission Control?']
+        `**${socLab.name}** — ${socLab.tagline}\n\n${socLab.summary}\n\nDocumented investigations include ${socLab.caseStudies.map((c) => `${c.title} (${c.mitre})`).join(', ')} — each written up evidence-first and mapped to MITRE ATT&CK. The SOC Lab section has the Splunk / Kali / Wireshark screenshots, the architecture, and the SPL detection queries.`,
+        ['What certifications does he hold?', 'Tell me about his experience', 'Show me the projects', 'Is he available to hire?']
+      );
+
+    case 'experience':
+      return R(
+        `Beyond engineering, ${personal.name.split(' ')[0]} is a founder with 10+ years of building businesses:\n\n${experience.slice(0, 3).map((e) => `**${e.role} — ${e.org}** (${e.period}) · ${e.tag}`).join('\n')}\n\nHe founded **Tochiugo Global Mark Limited** (Nigeria manufacturing — created the ISO-certified TOCHIUGO BOND product) and **Meridian Nexus Global LLC** (US vehicle export, with automation tooling he built himself), and also worked as a Correctional Officer for the State of Indiana. Full timeline is in the Experience section.`,
+        ['What certifications?', 'Tell me about the SOC lab', 'What has he built?', 'How do I contact him?']
+      );
+
+    case 'certs':
+      return R(
+        `Credentials (all verifiable on Credly):\n${certifications.items.map((c) => `• ${c.name} — ${c.issuer}`).join('\n')}\n\nPlus **TryHackMe ${certifications.tryhackme.stats[0].value}** global (${certifications.tryhackme.stats[3].value} score). Education: ${certifications.education.items.map((e) => e.title).join(' · ')}. The Certifications section has the verify links.`,
+        ['Tell me about the SOC lab', 'Is he available to hire?', 'View the résumé']
       );
 
     case 'architecture':
@@ -177,8 +191,8 @@ function generateResponse({ intent, slug }) {
     case 'help':
     default:
       return R(
-        `I'm ${ATLAS} — I answer questions about this engineering platform. Good starting points:\n\n🛰️  Mission Control — the live trading dashboard\n📱  WitnessPro — the shipped iOS app\n🧩  Projects — the 10-system ecosystem (ask by name)\n🏗️  Architecture — how the systems are built\n🔍  Evidence — how every claim is verified\n💼  Hiring — availability & target roles\n\nJust ask in plain language.`,
-        ['What is Mission Control?', 'List all projects', 'How is it all built?', 'Is Tochi available to hire?']
+        `I'm ${ATLAS} — I answer questions about this platform. Good starting points:\n\n🛰️  Mission Control — the live trading dashboard\n📱  WitnessPro — the shipped iOS app\n🛡️  SOC Lab — the home security-operations lab\n🧩  Projects — the 10-system ecosystem (ask by name)\n🏢  Experience — two companies founded + roles\n🎓  Certifications — Security+ & the Google cyber track\n💼  Hiring — availability & target roles\n\nJust ask in plain language.`,
+        ['What is Mission Control?', 'Tell me about the SOC lab', 'What businesses has he founded?', 'Is Tochi available to hire?']
       );
   }
 }

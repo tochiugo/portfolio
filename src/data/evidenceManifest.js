@@ -1,5 +1,4 @@
 // AUTO-GENERATED from public/evidence/ — curated screenshot paths per project slug.
-// Regenerate after changing curated images.
 const evidenceManifest = {
   "bet-bot": [
     "/evidence/bet-bot/01.png",
@@ -11,11 +10,6 @@ const evidenceManifest = {
   "fifteen-min": [
     "/evidence/fifteen-min/01.png",
     "/evidence/fifteen-min/02.png"
-  ],
-  "nexus": [
-    "/evidence/nexus/01.png",
-    "/evidence/nexus/02.png",
-    "/evidence/nexus/03.png"
   ],
   "nexus-bot": [
     "/evidence/nexus-bot/01.png",
@@ -44,6 +38,16 @@ const evidenceManifest = {
     "/evidence/sniper/02.png",
     "/evidence/sniper/03.png",
     "/evidence/sniper/04.png"
+  ],
+  "soc": [
+    "/evidence/soc/alert_8816_detail.jpg",
+    "/evidence/soc/alert_queue.jpg",
+    "/evidence/soc/kali_nmap_scan.jpg",
+    "/evidence/soc/soc_dashboard.jpg",
+    "/evidence/soc/splunk_87_events.jpg",
+    "/evidence/soc/splunk_ip_filter.jpg",
+    "/evidence/soc/utm_vms.jpg",
+    "/evidence/soc/wireshark_capture.jpg"
   ],
   "sporty": [
     "/evidence/sporty/01.png"

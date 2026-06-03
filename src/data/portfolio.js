@@ -6,21 +6,25 @@ import evidence from './evidenceManifest';
 export const personal = {
   name: 'Tochi Ugochukwu',
   handle: 'tochiugo',
-  title: 'Software & Automation Engineer',
-  subtitle: 'Live trading systems · iOS products · AI-driven automation',
+  title: 'Cybersecurity & Automation Engineer',
+  subtitle: 'SOC analyst · live trading systems · iOS · AI automation · founder',
   location: 'Los Angeles, CA',
   email: 'tu@tochiugo.com',
   phone: '(317) 833-2695',
   linkedin: 'https://linkedin.com/in/tochi-i-u-a539b8318',
   github: 'https://github.com/tochiugo',
+  tryhackme: 'https://tryhackme.com/p/tochiugo',
+  credly: 'https://credly.com/users/tochi-ikedinachi-ugochukwu',
+  profilePicture: '/images/tochi_ugochukwu.jpg',
   targetRoles: [
-    'Software Engineer', 'Automation Engineer', 'Applied AI Engineer',
-    'Backend / Systems Engineer', 'Founding Engineer',
+    'SOC Analyst (Tier 1/2)', 'Cybersecurity Engineer', 'Detection Engineer',
+    'Automation Engineer', 'Applied AI Engineer', 'Software Engineer',
   ],
   pitch:
-    "I build systems that run — not slide decks. Autonomous trading bots with risk controls and " +
-    "calibration, a published-grade iOS evidence app, browser-automation pipelines, and AI-driven " +
-    "tooling. Everything on this site is backed by real runtime logs, databases, and screenshots.",
+    "I build systems that run — not slide decks. A live trading engine with risk controls and " +
+    "calibration, a SwiftUI iOS evidence app, browser-automation pipelines, AI-driven tooling, and a " +
+    "home SOC lab where I triage and document real investigations. CompTIA Security+ certified, with " +
+    "10+ years of building and running businesses behind it.",
 };
 
 // Top navigation — order matters: proof first, person second.
@@ -28,9 +32,10 @@ export const nav = [
   { id: 'mission-control', label: 'Mission Control' },
   { id: 'witnesspro', label: 'WitnessPro' },
   { id: 'about', label: 'About' },
-  { id: 'nexus', label: 'Nexus' },
+  { id: 'soc-lab', label: 'SOC Lab' },
   { id: 'projects', label: 'Projects' },
-  { id: 'evidence', label: 'Evidence' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'certs', label: 'Certs' },
   { id: 'contact', label: 'Contact' },
 ];
 
@@ -98,24 +103,165 @@ export const witnessPro = {
   ],
 };
 
-// ── Nexus Ecosystem (curiosity — public-safe only) ──────────────────────────
-export const nexus = {
-  slug: 'nexus',
-  name: 'Nexus Ecosystem',
-  tagline: 'A digital-human platform. Most of it stays behind the curtain.',
-  status: 'Confidential · public-safe surface only',
-  summary:
-    "Nexus is an in-progress digital-human ecosystem — body capture, twin creation, and an agentic " +
-    "interface layer. The architecture and specifications are confidential. What's shown here is the " +
-    "public-safe prototype surface only: enough to convey the product direction, nothing sensitive.",
-  publicConcepts: ['Digital Human', 'Body Capture', 'Twin Creation', 'Public UI Concepts'],
-  images: evidence.nexus,
-  captions: [
-    'Public prototype — the Nexus "Create your Digital Human" concept shell.',
-    'Concept navigation — the digital-human capture and twin-creation surface.',
-    'Onboarding concept — ownership and privacy framing for a personal digital twin.',
+// ── About (the person — photo, story, the businesses behind it) ──────────────
+export const about = {
+  photo: '/images/tochi_ugochukwu.jpg',
+  paragraphs: [
+    "You've now seen a live trading system and a shipped iOS product. Here's the person who built them: " +
+    "I'm Tochi Ugochukwu — a cybersecurity & automation engineer in Los Angeles, and a founder who has " +
+    "been building and running real businesses for over a decade.",
+    "My range is wide on purpose. Python trading engines with real risk controls and Brier calibration. " +
+    "A SwiftUI iOS app touching low-level AVFoundation. Node orchestration fusing news, crypto, and AI " +
+    "signals. Playwright automation against live UIs. And a home SOC lab where I triage simulated " +
+    "investigations end-to-end with Splunk and Google Chronicle, map findings to MITRE ATT&CK, and write " +
+    "them up the way a Tier-1 analyst does — evidence-first.",
+    "That entrepreneurial background is the throughline: I've built supply chains, automated my own " +
+    "operations, and shipped products end-to-end. I bring the same instinct to engineering — understand " +
+    "the system, build the thing, run it, log it, and keep the receipts.",
   ],
-  withheld: ['Confidential architecture', 'Internal specifications', 'Capture pipeline', 'Strategy & roadmap'],
+  workAuthorization:
+    "Authorized to work in the United States — no employer sponsorship required. Open to on-site " +
+    "(Southern California) or remote. Available immediately.",
+  highlights: [
+    { value: '10+ yrs', label: 'Building businesses' },
+    { value: '200+', label: 'SOC events triaged' },
+    { value: 'Security+', label: 'CompTIA certified' },
+    { value: '2', label: 'Companies founded' },
+  ],
+};
+
+// ── SOC Homelab (replaces the former Nexus slot) ────────────────────────────
+export const socLab = {
+  slug: 'soc',
+  name: 'Home SOC Lab',
+  tagline: 'A real security operations environment — triage, detect, document.',
+  status: 'Operational · Active',
+  summary:
+    "A functional home SOC built on UTM virtual machines: Splunk Enterprise and Google Chronicle for " +
+    "SIEM, Kali Linux for recon, and Wireshark for packet analysis. I've worked 200+ simulated events " +
+    "end-to-end, written SPL and YARA-L detections, authored NIST-aligned IR playbooks, and documented " +
+    "five full case studies — every finding mapped to MITRE ATT&CK.",
+  stats: [
+    { value: '200+', label: 'Events triaged' },
+    { value: '5', label: 'Case studies' },
+    { value: '6', label: 'IR playbooks' },
+    { value: '3', label: 'SIEM platforms' },
+  ],
+  architecture: [
+    { icon: '🔍', title: 'SIEM', desc: 'Splunk Enterprise + Google Chronicle — ingest, search, correlate' },
+    { icon: '🐧', title: 'Attack Sim', desc: 'Kali Linux — Nmap scans and recon exercises' },
+    { icon: '🌐', title: 'Network', desc: 'Wireshark — packet capture and protocol analysis' },
+    { icon: '🧱', title: 'Isolated Lab', desc: 'UTM VMs with separate attacker / target segments' },
+  ],
+  images: evidence.soc,
+  captions: [
+    'Splunk — SPL query returning 87 firewall events, filtered by source IP and event type.',
+    'Splunk — isolating a single source IP across the firewall log timeline.',
+    'SOC dashboard — alert counts with TP/FP triage classification and alert-type breakdown.',
+    'Alert #8816 — brute-force investigation detail mapped to MITRE T1110.',
+    'Alert queue — active triage prioritized by severity.',
+    'Kali Linux — Nmap -sV scan identifying open services on a lab target.',
+    'Wireshark — live packet capture, filtered for suspicious connection patterns.',
+    'UTM — the isolated virtualization lab hosting attacker and target VMs.',
+  ],
+  caseStudies: [
+    { sev: 'High', mitre: 'T1110', title: 'Brute-Force Authentication', body: '47 failed logins from one IP in 12 minutes — credential-stuffing confirmed, contained, MFA enforced.' },
+    { sev: 'High', mitre: 'T1566', title: 'Phishing Campaign', body: 'Four coordinated alerts in 3 minutes; one account phished within 8 minutes. Suspended, reset, domain blacklisted.' },
+    { sev: 'Medium', mitre: 'T1041', title: 'Suspected Exfiltration', body: '2.3 GB outbound to an uncategorized IP off-hours. Host isolated, forensic image captured, DLP updated.' },
+    { sev: 'High', mitre: 'T1071', title: 'C2 Beaconing', body: '15-second beacon interval, Cobalt Strike profile via VirusTotal. Host isolated, endpoint hunt initiated.' },
+  ],
+  spl: [
+    { title: 'Brute-Force Detection', code: 'index=auth_logs action=failure\n| stats count by src_ip, user\n| where count > 10\n| sort -count' },
+    { title: 'Data-Exfil Anomaly', code: 'index=proxy_logs\n| stats sum(bytes_out) as out by src_ip\n| where out > 1000000000' },
+    { title: 'C2 Beacon Pattern', code: 'index=proxy_logs\n| bin _time span=15s\n| stats count, avg(bytes) as a by _time, dst_ip\n| where a<600' },
+  ],
+};
+
+// ── Experience (the businesses + roles that were missing) ───────────────────
+export const experience = [
+  {
+    org: 'Meridian Nexus Global LLC',
+    role: 'Founder & CEO',
+    where: 'Los Angeles, CA',
+    period: 'Mar 2025 — Present',
+    tag: 'International Trade · Vehicle Export',
+    body: 'Founded and operate an international logistics and vehicle-export business serving U.S. and ' +
+      'Nigerian markets — sourcing vehicles at U.S. auctions and managing full export logistics. Built ' +
+      'internal automation tools for operations, lead management, and shipment tracking, and develop ' +
+      'software and AI-powered tools under the Meridian Nexus brand.',
+    current: true,
+  },
+  {
+    org: 'Tochiugo Global Mark Limited',
+    role: 'Founder & CEO',
+    where: 'Nigeria — Active (family-managed)',
+    period: '2012 — Present',
+    tag: 'Manufacturing · Import · Brand Owner',
+    body: 'Founded and built a Nigeria-based manufacturing and distribution company. Created TOCHIUGO ' +
+      'BOND — a proprietary branded aluminium-composite-panel product (ISO 9001:2000 certified) with a ' +
+      'supply chain sourced from China and Brazil. Ran it for 10 years before relocating to the USA; it ' +
+      'continues under family management while I remain CEO.',
+    current: true,
+  },
+  {
+    org: 'Independent — Home SOC Lab',
+    role: 'Security Analyst',
+    where: 'Los Angeles, CA',
+    period: '2024 — Present',
+    tag: 'Cybersecurity · SOC',
+    body: 'Operate a home SOC: 200+ simulated events triaged with Splunk and Chronicle, SPL/YARA-L ' +
+      'detections authored, six NIST-aligned IR playbooks, and five MITRE-mapped case studies.',
+    current: true,
+  },
+  {
+    org: 'Independent',
+    role: 'Automation & AI Engineer',
+    where: 'Remote',
+    period: '2022 — Present',
+    tag: 'Engineering',
+    body: 'Build event-driven automation and trading systems (Polymarket, Kalshi, Aviator), the WitnessPro ' +
+      'iOS app, and AI-assisted tooling — all backed by runtime logs and live operational evidence.',
+    current: true,
+  },
+  {
+    org: 'State of Indiana — Dept. of Corrections',
+    role: 'Correctional Officer',
+    where: 'Indiana, USA — On-site',
+    period: 'Oct 2024 — Apr 2025',
+    tag: 'Government · Security',
+    body: 'Monitored facility security systems and documented incidents with structured reporting while ' +
+      'building an IT/engineering career — discipline and operational vigilance directly transferable to ' +
+      'SOC monitoring and incident response.',
+    current: false,
+  },
+];
+
+// ── Certifications & education ───────────────────────────────────────────────
+export const certifications = {
+  items: [
+    { icon: '🔒', name: 'CompTIA Security+ ce', issuer: 'CompTIA · Feb 2025 (exp. 2028)', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+    { icon: '🌐', name: 'Google Cybersecurity Professional', issuer: 'Google / Coursera · 2024', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+    { icon: '🖥️', name: 'Google IT Support Professional', issuer: 'Google / Coursera · 2025', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+    { icon: '🛡', name: 'Detection & Response', issuer: 'Google / Coursera', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+    { icon: '🌐', name: 'Networks & Network Security', issuer: 'Google / Coursera', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+    { icon: '🐧', name: 'Linux & SQL', issuer: 'Google / Coursera', url: 'https://credly.com/users/tochi-ikedinachi-ugochukwu' },
+  ],
+  tryhackme: {
+    url: 'https://tryhackme.com/p/tochiugo',
+    stats: [
+      { value: 'Top 8%', label: 'Global rank' },
+      { value: '50+', label: 'Rooms' },
+      { value: '11', label: 'Badges' },
+      { value: '172K+', label: 'Score' },
+    ],
+    badges: ['OWASP Top 10 (Rare)', 'Advent of Cyber 2024 (Rare)', 'Privilege Escalation (Rare)', 'SOC Level 1', 'cat linux.txt', 'Webbed'],
+  },
+  education: {
+    items: [
+      { title: 'High School Diploma (GED)', detail: 'United States' },
+      { title: 'Self-Directed Technical Training', detail: 'AI/ML · Software Development · Cybersecurity · Automation Engineering — 2022–present' },
+    ],
+  },
 };
 
 // ── Project ecosystem (curated galleries) ───────────────────────────────────
@@ -359,7 +505,7 @@ export const evidenceRepo = {
   stats: [
     { label: 'Projects documented', value: '13' },
     { label: 'Screenshots reviewed', value: '200+' },
-    { label: 'Curated to', value: '38' },
+    { label: 'Curated to', value: '43' },
     { label: 'Evidence sections', value: '7' },
   ],
 };
@@ -372,5 +518,6 @@ export const techStack = {
 };
 
 export default {
-  personal, nav, missionControl, witnessPro, nexus, projects, evidenceRepo, techStack,
+  personal, nav, missionControl, witnessPro, about, socLab, experience,
+  certifications, projects, evidenceRepo, techStack,
 };

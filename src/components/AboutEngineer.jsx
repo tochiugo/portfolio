@@ -1,5 +1,5 @@
 import React from 'react';
-import { personal, techStack } from '../data/portfolio';
+import { personal, about, techStack } from '../data/portfolio';
 
 export function AboutEngineer() {
   return (
@@ -8,25 +8,38 @@ export function AboutEngineer() {
         <div className="lg:col-span-2">
           <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">The Person Behind the Systems</div>
           <h2 className="font-syne text-4xl font-extrabold tracking-tight">About {personal.name.split(' ')[0]}</h2>
-          <div className="mt-6 space-y-4 text-zinc-300 leading-relaxed text-[15px] max-w-2xl">
-            <p>
-              You've now seen a live trading system and a shipped iOS product. So here's the short version of who built them:
-              I'm <strong className="text-white">{personal.name}</strong>, a software & automation engineer in {personal.location}.
-            </p>
-            <p>{personal.pitch}</p>
-            <p>
-              My range is deliberately wide — Python trading engines with real risk controls and Brier calibration, SwiftUI
-              apps touching low-level AVFoundation, Node orchestration layers fusing news/crypto/AI signals, and Playwright
-              automation against live, hostile UIs. The throughline is the same: <strong className="text-white">build the thing,
-              run it, log it, and keep the receipts.</strong>
-            </p>
-            <p>
-              I'm drawn to roles where shipping and operating real systems matters more than slideware — automation, applied
-              AI, and backend/systems work at teams that move fast.
-            </p>
+
+          {/* photo + intro */}
+          <div className="mt-6 flex flex-col sm:flex-row gap-6 items-start">
+            <img
+              src={about.photo}
+              alt={personal.name}
+              className="w-32 h-32 rounded-2xl object-cover border border-white/10 flex-shrink-0"
+            />
+            <div className="space-y-4 text-zinc-300 leading-relaxed text-[15px]">
+              {about.paragraphs.map((p, i) => (
+                <p key={i} dangerouslySetInnerHTML={{ __html: i === 0 ? p.replace(personal.name, `<strong class="text-white">${personal.name}</strong>`) : p }} />
+              ))}
+            </div>
           </div>
 
-          <div className="mt-8">
+          {/* highlights */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {about.highlights.map((h) => (
+              <div key={h.label} className="rounded-xl border border-white/10 bg-zinc-900/40 p-3 text-center">
+                <div className="font-syne text-xl font-bold text-[#00E87A]">{h.value}</div>
+                <div className="font-mono text-[9px] uppercase tracking-wider text-zinc-500 mt-1 leading-tight">{h.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* work auth */}
+          <div className="mt-6 rounded-xl border border-[#00E87A]/20 bg-[#00E87A]/[0.04] px-4 py-3">
+            <div className="font-mono text-[10px] uppercase tracking-wider text-[#00E87A] mb-1">Work Authorization</div>
+            <p className="text-sm text-zinc-300">{about.workAuthorization}</p>
+          </div>
+
+          <div className="mt-6">
             <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">Open To</div>
             <div className="flex flex-wrap gap-2">
               {personal.targetRoles.map((r) => (

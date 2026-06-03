@@ -4,8 +4,10 @@ import { Nav } from './components/Nav';
 import { MissionControl } from './components/MissionControl';
 import { WitnessProSection } from './components/WitnessProSection';
 import { AboutEngineer } from './components/AboutEngineer';
-import { NexusSection } from './components/NexusSection';
+import { SocLab } from './components/SocLab';
 import { ProjectEcosystem } from './components/ProjectEcosystem';
+import { Experience } from './components/Experience';
+import { Certifications } from './components/Certifications';
 import { EvidenceRepo } from './components/EvidenceRepo';
 import { ContactSection } from './components/ContactSection';
 import { NexusAI } from './components/NexusAI';
@@ -93,11 +95,17 @@ export default function App() {
       {/* ABOUT */}
       <section id="about" className="py-24 bg-black border-b border-white/10"><AboutEngineer /></section>
 
-      {/* NEXUS */}
-      <section id="nexus" className="py-24 bg-zinc-950 border-b border-white/10"><NexusSection /></section>
+      {/* SOC LAB — replaces the former Nexus slot */}
+      <section id="soc-lab" className="py-24 bg-zinc-950 border-b border-white/10"><SocLab /></section>
 
       {/* PROJECTS */}
       <section id="projects" className="py-24 bg-black border-b border-white/10"><ProjectEcosystem /></section>
+
+      {/* EXPERIENCE */}
+      <section id="experience" className="py-24 bg-zinc-950 border-b border-white/10"><Experience /></section>
+
+      {/* CERTIFICATIONS */}
+      <section id="certs" className="py-24 bg-black border-b border-white/10"><Certifications /></section>
 
       {/* EVIDENCE */}
       <section id="evidence" className="py-24 bg-zinc-950 border-b border-white/10"><EvidenceRepo /></section>
