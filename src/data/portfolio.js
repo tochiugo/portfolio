@@ -43,29 +43,29 @@ export const nav = [
 export const missionControl = {
   system: 'Polymarket Mission Control',
   codename: 'V12-53',
-  statusUrl: import.meta.env.VITE_STATUS_URL || '/status.json',
-  // heartbeat older than this (seconds) => treat the live feed as OFFLINE
-  offlineThresholdSec: 90,
-  pollIntervalMs: 45000,
+  statusUrl: import.meta.env.VITE_STATUS_URL || '/api/status',
+  // heartbeat (bot.log mtime) older than this (seconds) => OFFLINE
+  offlineThresholdSec: 300,
+  pollIntervalMs: 15000,
   summary:
-    "A real prediction-market trading engine for Polymarket BTC/ETH up-down markets — shown here " +
-    "in a public-safe, dry-run mode. No wallet, no live orders, no private data. Just the operational " +
-    "surface: heartbeats, market scans, signal evaluations, risk state, and runtime logs.",
+    "This is the real thing — a live, 24/7 multi-signal trading engine running against Polymarket " +
+    "and Kalshi prediction markets. The dashboard below reads straight from the bot's own runtime " +
+    "log and SQLite trade ledger: real scans, real trades, real PnL, real calibration. No mock data.",
   strategyNote:
-    "Three complementary edges run together: Latency-Arb (Binance leads Polymarket 2-55s), " +
-    "Flash-Crash (contrarian bounce on a sudden 0.27+ probability drop), and Late-Window " +
-    "(market mid + spot price confirmation inside the final two minutes). Every strategy carries " +
-    "SL/TP exit logic, a 10-minute trend filter, and Kelly position sizing.",
-  stack: ['Python', 'asyncio', 'Binance WS', 'Polymarket CLOB/Gamma', 'SQLite', 'Brier calibration', 'Telegram'],
-  // Engineering timeline — show the journey, not perfection.
+    "Fourteen signals run in parallel. Four are live DRIVERS that can place real orders " +
+    "(soccer / sports / tennis Elo and a Kalshi cross-price signal); the other ten run in SHADOW mode — " +
+    "recorded at zero weight so they can be validated on real data before being promoted. Every order " +
+    "passes a Kelly sizer, a min-edge gate, daily-loss and exposure caps, a circuit breaker, and a " +
+    "kill-switch, with Brier calibration tracking probability accuracy over the last 50 trades.",
+  stack: ['Python', 'asyncio', 'Polymarket CLOB/Gamma', 'Kalshi', 'Coinbase/Binance feeds', 'SQLite', 'Brier calibration', 'provenance/run tracking'],
+  // Engineering evolution — real capabilities, layered over many runs.
   timeline: [
-    { v: 'V1', title: 'Initial Concept', body: 'First signal-based loop against Polymarket markets. Naive, no exits — but running.' },
-    { v: 'V2', title: 'Risk Controls', body: 'Kill-switch, exposure caps, and SL/TP exit logic — the gap most bots never close.' },
-    { v: 'V4', title: 'Signal Improvements', body: 'Latency-arb core: detect Binance moves before Polymarket reprices (2-55s window).' },
-    { v: 'V6', title: 'Market Filtering', body: '10-minute trend filter added to kill the directional-bias drawdown documented in live runs.' },
-    { v: 'V8', title: 'AI Evaluation', body: 'Model-scored market evaluation and contrarian flash-crash entries with confidence gating.' },
-    { v: 'V10', title: 'Monitoring', body: 'Position monitor every 2s, Brier calibration, watchdog, and Telegram alerting.' },
-    { v: 'V12-53', title: 'Current Operational Version', body: 'Three strategies, Kelly sizing, paper router by default. The version on this dashboard.' },
+    { v: 'Signals', title: 'Multi-Signal Core', body: '14 signal sources — sports Elo, Kalshi cross-price, order-book, momentum, weather, political polls.' },
+    { v: 'Shadow', title: 'Shadow Validation', body: 'New signals run at 0-weight first, recorded against real outcomes before they can trade live.' },
+    { v: 'Risk', title: 'Risk Engine', body: 'Kelly sizing, min-edge gate, daily-loss & exposure caps, circuit breaker, kill-switch.' },
+    { v: 'Calib', title: 'Calibration', body: 'Brier score over the last 50 trades; per-signal PnL attribution in SQLite.' },
+    { v: 'Prov', title: 'Provenance', body: 'Every run stamped with git commit, signal-set hash, and env snapshot for reproducibility.' },
+    { v: 'Live', title: 'Live Execution', body: 'CLOB executor placing real orders on Polymarket — real money, real reconciliation. Run 58+.' },
   ],
 };
 

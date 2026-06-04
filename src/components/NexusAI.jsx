@@ -89,8 +89,8 @@ function generateResponse({ intent, slug }) {
 
     case 'mission_control':
       return R(
-        `**Mission Control** is the homepage centerpiece — a live operational dashboard for the **Polymarket ${missionControl.codename}** trading system, shown in a public-safe **dry-run** mode (no wallet, no live orders, no private data).\n\nIt reads a \`status.json\` the bot writes every 30s and renders: ONLINE/OFFLINE, uptime, last heartbeat, system health, markets scanned, evaluations processed, a recent-activity feed, and live runtime logs.\n\nThe ONLINE/OFFLINE logic is deliberately simple: if the heartbeat goes stale, the dashboard flips to OFFLINE with a downtime counter; when fresh heartbeats return, it flips back to ONLINE automatically.\n\n${missionControl.strategyNote}`,
-        ['How is the bot architected?', 'Walk the V1→V12-53 timeline', 'Is this real or simulated?', 'Tell me about Polymarket V3']
+        `**Mission Control** is the homepage centerpiece — and it's **the real, live bot**, not a demo. A bridge reads the running bot's own \`bot.log\` and SQLite trade ledger and pushes a sanitized snapshot every ~20s; the dashboard renders it through a \`/api/status\` proxy.\n\nIt shows real numbers: live/total PnL, daily PnL, total trades, win rate, open positions, bankroll, Brier calibration, cumulative markets scanned and evaluations, the real signal policy, recent trades, and a live tail of the bot log. If the bot's log goes quiet, it flips to OFFLINE automatically.\n\n${missionControl.strategyNote}\n\nWhat's hidden: wallet keys, addresses, and API secrets never leave the machine — only public-safe metrics are published.`,
+        ['How is the bot architected?', 'What signals does it run?', 'Tell me about Polymarket V3', 'Is this real?']
       );
 
     case 'trading':
