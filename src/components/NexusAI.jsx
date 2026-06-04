@@ -224,12 +224,13 @@ export function NexusAI() {
         const d = await r.json();
         const m = d.metrics || {};
         const f = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
+        const money = (n) => (n == null ? '—' : `${n < 0 ? '-' : ''}$${Math.abs(Number(n)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
         responseText =
           `Here's the bot **right now** — straight from its live log + trade ledger:\n\n` +
           `• Status: **${(d.status || '').toUpperCase()}** · mode **${d.mode}** (run #${d.run_id})\n` +
-          `• Total PnL: **$${f(m.total_pnl)}** across ${f(m.trades_total)} trades · ${m.win_rate}% win rate\n` +
-          `• PnL today: **$${f(m.daily_pnl)}** · live (real-money) PnL: **$${f(m.live_pnl)}** over ${f(m.live_trades)} trades\n` +
-          `• Open positions: ${f(m.open_positions)} · bankroll ~$${f(m.bankroll_usd)}\n` +
+          `• Total PnL: **${money(m.total_pnl)}** across ${f(m.trades_total)} trades · ${m.win_rate}% win rate\n` +
+          `• PnL today: **${money(m.daily_pnl)}** · live (real-money) PnL: **${money(m.live_pnl)}** over ${f(m.live_trades)} trades\n` +
+          `• Open positions: ${f(m.open_positions)} · bankroll ~${money(m.bankroll_usd)}\n` +
           `• Markets scanned: **${f(m.markets_scanned)}** · ${f(m.evaluations)} evaluations · Brier ${m.brier}\n\n` +
           `Scroll up to **Mission Control** for the full live dashboard — it refreshes every few seconds.`;
         chips = ['How is the bot architected?', 'What signals does it run?', 'Is this real?'];

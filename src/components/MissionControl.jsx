@@ -65,8 +65,11 @@ export function MissionControl() {
   const { data } = useLiveStatus();
   const m = data?.metrics || {};
   const hbAgeAtRender = data?.last_heartbeat ? Math.floor((Date.now() - Date.parse(data.last_heartbeat)) / 1000) : null;
+  const connecting = !data;
   const online = data ? (data.status === 'online' && (hbAgeAtRender == null || hbAgeAtRender < MC.offlineThresholdSec)) : false;
   const isLive = data?.mode === 'LIVE';
+  const statusLabel = connecting ? 'CONNECTING' : online ? 'ONLINE' : 'OFFLINE';
+  const statusColor = connecting ? AMBER : online ? ACCENT : RED;
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -83,25 +86,25 @@ export function MissionControl() {
             {data?.codename || MC.codename} · run #{data?.run_id ?? '—'} of {data?.runs_total ?? '—'} · {data?.health?.signals_active ?? 14} signals active
           </p>
         </div>
-        <span className={`inline-flex items-center gap-2 self-start rounded-full border px-3 py-1.5 font-mono text-xs ${isLive ? 'border-red-500/50 text-red-300' : 'border-amber-400/40 text-amber-300'}`}>
-          <span className="w-1.5 h-1.5 rounded-full soc-pulse" style={{ background: isLive ? RED : AMBER }} />
-          {isLive ? '🔴 LIVE TRADING · real money' : 'PAPER / shadow'}
+        <span className={`inline-flex items-center gap-2 self-start whitespace-nowrap rounded-full border px-3 py-1.5 font-mono text-xs ${isLive ? 'border-red-500/50 text-red-300' : 'border-amber-400/40 text-amber-300'}`}>
+          <span className="w-1.5 h-1.5 rounded-full soc-pulse flex-shrink-0" style={{ background: isLive ? RED : AMBER }} />
+          {isLive ? 'LIVE TRADING · real money' : 'PAPER / shadow'}
         </span>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-5">
         {/* status panel */}
-        <div className={`lg:col-span-1 rounded-2xl border p-6 ${online ? 'border-[#00E87A]/30 bg-[#00E87A]/[0.04]' : 'border-red-500/40 bg-red-500/[0.05]'}`}>
+        <div className={`lg:col-span-1 rounded-2xl border p-6 ${online ? 'border-[#00E87A]/30 bg-[#00E87A]/[0.04]' : connecting ? 'border-white/15 bg-zinc-900/40' : 'border-red-500/40 bg-red-500/[0.05]'}`}>
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">System Status</span>
             <span className="font-mono text-[10px] text-zinc-500">v{data?.version || '12.53.0'}</span>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <span className="relative flex h-3.5 w-3.5">
-              <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: online ? ACCENT : RED }} />
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5" style={{ background: online ? ACCENT : RED }} />
+              <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ background: statusColor }} />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5" style={{ background: statusColor }} />
             </span>
-            <span className="font-syne text-3xl font-extrabold" style={{ color: online ? ACCENT : RED }}>{online ? 'ONLINE' : 'OFFLINE'}</span>
+            <span className="font-syne text-3xl font-extrabold" style={{ color: statusColor }}>{statusLabel}</span>
           </div>
           <div className="mt-5 space-y-3">
             <Row label="Mode" value={data?.mode || '—'} color={isLive ? RED : AMBER} />

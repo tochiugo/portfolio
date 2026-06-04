@@ -10,6 +10,7 @@ import { Experience } from './components/Experience';
 import { Certifications } from './components/Certifications';
 import { EvidenceRepo } from './components/EvidenceRepo';
 import { ContactSection } from './components/ContactSection';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { NexusAI } from './components/NexusAI';
 
 function CustomCursor() {
@@ -89,32 +90,32 @@ export default function App() {
           <div className="absolute top-10 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[#00E87A] blur-[90px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-cyan-500 blur-[90px]" />
         </div>
-        <div className="relative"><MissionControl /></div>
+        <div className="relative"><ErrorBoundary name="mission-control"><MissionControl /></ErrorBoundary></div>
       </section>
 
       {/* WITNESSPRO */}
-      <section id="witnesspro" className="py-24 bg-zinc-950 border-b border-white/10"><WitnessProSection /></section>
+      <section id="witnesspro" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="witnesspro"><WitnessProSection /></ErrorBoundary></section>
 
       {/* ABOUT */}
-      <section id="about" className="py-24 bg-black border-b border-white/10"><AboutEngineer /></section>
+      <section id="about" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="about"><AboutEngineer /></ErrorBoundary></section>
 
       {/* SOC LAB — replaces the former Nexus slot */}
-      <section id="soc-lab" className="py-24 bg-zinc-950 border-b border-white/10"><SocLab /></section>
+      <section id="soc-lab" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="soc-lab"><SocLab /></ErrorBoundary></section>
 
       {/* PROJECTS */}
-      <section id="projects" className="py-24 bg-black border-b border-white/10"><ProjectEcosystem /></section>
+      <section id="projects" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="projects"><ProjectEcosystem /></ErrorBoundary></section>
 
       {/* EXPERIENCE */}
-      <section id="experience" className="py-24 bg-zinc-950 border-b border-white/10"><Experience /></section>
+      <section id="experience" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="experience"><Experience /></ErrorBoundary></section>
 
       {/* CERTIFICATIONS */}
-      <section id="certs" className="py-24 bg-black border-b border-white/10"><Certifications /></section>
+      <section id="certs" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="certs"><Certifications /></ErrorBoundary></section>
 
       {/* EVIDENCE */}
-      <section id="evidence" className="py-24 bg-zinc-950 border-b border-white/10"><EvidenceRepo /></section>
+      <section id="evidence" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="evidence"><EvidenceRepo /></ErrorBoundary></section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 bg-black"><ContactSection /></section>
+      <section id="contact" className="py-24 bg-black"><ErrorBoundary name="contact"><ContactSection /></ErrorBoundary></section>
 
       {/* footer */}
       <footer className="border-t border-white/10 py-8 bg-black">
@@ -132,7 +133,7 @@ export default function App() {
       </footer>
 
       {/* AI assistant */}
-      <NexusAI />
+      <ErrorBoundary name="assistant"><NexusAI /></ErrorBoundary>
     </div>
   );
 }
