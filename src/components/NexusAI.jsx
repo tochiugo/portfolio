@@ -49,6 +49,7 @@ function classifyIntent(text) {
   }
 
   const has = (...terms) => terms.some((term) => t.includes(term));
+  if (has('how is the bot', 'bot doing', 'how is it doing', 'how is it performing', 'current pnl', 'live pnl', 'live numbers', "pnl", "p&l", 'how much profit', 'how much has', 'bot status', 'doing right now', 'how is the trading')) return { intent: 'bot_status' };
   if (has('hello', 'hi ', 'hey', 'good morning', 'good afternoon', 'howdy')) return { intent: 'greeting' };
   if (has('thank', 'awesome', 'great', 'perfect', 'nice')) return { intent: 'thanks' };
   if (has('bye', 'goodbye', 'see you', 'later', 'take care')) return { intent: 'goodbye' };
@@ -77,8 +78,8 @@ function generateResponse({ intent, slug }) {
   switch (intent) {
     case 'greeting':
       return R(
-        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s assistant.\n\nThis is a proof-driven platform. The homepage is a live trading dashboard; below it are a shipped iOS app, a home SOC lab, a 10-project ecosystem, his certifications, and his experience as a founder of two companies — all backed by real evidence.\n\nWhat do you want to dig into?`,
-        ['What is Mission Control?', 'Tell me about the SOC lab', 'What businesses has he founded?', 'What certifications?']
+        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s assistant.\n\nThis is a proof-driven platform. The homepage is a **live** trading dashboard wired to a real bot running 24/7; below it are a shipped iOS app, a home SOC lab, a 10-project ecosystem, his certifications, and his experience as a founder of two companies — all backed by real evidence.\n\nWhat do you want to dig into?`,
+        ["How's the bot doing right now?", 'Tell me about the SOC lab', 'What businesses has he founded?', 'What certifications?']
       );
 
     case 'identity':
@@ -215,7 +216,30 @@ export function NexusAI() {
     setMessages((prev) => [...prev, { role: 'user', content: msg, chips: [] }]);
     setIsTyping(true);
     await new Promise((r) => setTimeout(r, 500 + Math.random() * 400));
-    const { text: responseText, chips } = generateResponse(classifyIntent(msg));
+    const cls = classifyIntent(msg);
+    let responseText, chips;
+    if (cls.intent === 'bot_status') {
+      try {
+        const r = await fetch(`${missionControl.statusUrl}?t=${Date.now()}`, { cache: 'no-store' });
+        const d = await r.json();
+        const m = d.metrics || {};
+        const f = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
+        responseText =
+          `Here's the bot **right now** — straight from its live log + trade ledger:\n\n` +
+          `• Status: **${(d.status || '').toUpperCase()}** · mode **${d.mode}** (run #${d.run_id})\n` +
+          `• Total PnL: **$${f(m.total_pnl)}** across ${f(m.trades_total)} trades · ${m.win_rate}% win rate\n` +
+          `• PnL today: **$${f(m.daily_pnl)}** · live (real-money) PnL: **$${f(m.live_pnl)}** over ${f(m.live_trades)} trades\n` +
+          `• Open positions: ${f(m.open_positions)} · bankroll ~$${f(m.bankroll_usd)}\n` +
+          `• Markets scanned: **${f(m.markets_scanned)}** · ${f(m.evaluations)} evaluations · Brier ${m.brier}\n\n` +
+          `Scroll up to **Mission Control** for the full live dashboard — it refreshes every few seconds.`;
+        chips = ['How is the bot architected?', 'What signals does it run?', 'Is this real?'];
+      } catch {
+        responseText = "I couldn't reach the live feed this second — the Mission Control dashboard at the top of the page has the latest real numbers.";
+        chips = ['What is Mission Control?', 'How is the bot architected?'];
+      }
+    } else {
+      ({ text: responseText, chips } = generateResponse(cls));
+    }
     setMessages((prev) => [...prev, { role: 'assistant', content: responseText, chips }]);
     setIsTyping(false);
   };
