@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 // - swipe left/right (touch + mouse drag), arrow keys, on-screen arrows, dot indicators
 // - click to open a fullscreen lightbox (also swipeable)
 // - phone | wide | square framing presets
-// Recruiters explore a project without scrolling through 30 screenshots.
+// Images use native lazy-loading + WebP, so the (image-free) homepage loads instantly
+// and gallery images only fetch as their section nears the viewport on real browsers.
 export function SwipeGallery({ images = [], captions = [], frame = 'wide', accent = '#00E87A', label = '' }) {
   const [index, setIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -18,7 +19,6 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
   const next = useCallback(() => go((i) => i + 1), [go]);
   const prev = useCallback(() => go((i) => i - 1), [go]);
 
-  // pointer / touch drag
   const onDown = (x) => { drag.current = { active: true, startX: x, dx: 0 }; };
   const onMove = (x) => {
     if (!drag.current.active) return;
@@ -78,7 +78,8 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
             <img
               src={src}
               alt={captions[i] || `${label} screenshot ${i + 1}`}
-              loading={i === 0 ? 'eager' : 'lazy'}
+              loading="lazy"
+              decoding="async"
               draggable={false}
               onClick={() => !inLightbox && Math.abs(drag.current.dx) < 6 && setLightbox(true)}
               className={`max-h-full max-w-full object-contain ${inLightbox ? '' : 'cursor-zoom-in'} ${frame === 'phone' ? 'rounded-[1.6rem]' : 'rounded-lg'}`}
@@ -87,7 +88,6 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
         ))}
       </div>
 
-      {/* arrows */}
       {count > 1 && (
         <>
           <button
@@ -109,7 +109,6 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
         </>
       )}
 
-      {/* counter pill */}
       {count > 1 && (
         <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 border border-white/10 font-mono text-[10px] text-zinc-300">
           {index + 1} / {count}
@@ -122,7 +121,6 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
     <div>
       <Track inLightbox={false} />
 
-      {/* caption */}
       {captions[index] && (
         <p className="mt-3 text-sm text-zinc-400 leading-relaxed min-h-[2.5rem]">
           <span className="font-mono text-[11px] mr-2" style={{ color: accent }}>{String(index + 1).padStart(2, '0')}</span>
@@ -130,7 +128,6 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
         </p>
       )}
 
-      {/* dots */}
       {count > 1 && (
         <div className="mt-3 flex items-center justify-center gap-1.5">
           {images.map((_, i) => (
@@ -139,21 +136,14 @@ export function SwipeGallery({ images = [], captions = [], frame = 'wide', accen
               onClick={() => go(i)}
               aria-label={`Go to slide ${i + 1}`}
               className="h-1.5 rounded-full transition-all"
-              style={{
-                width: i === index ? 22 : 6,
-                background: i === index ? accent : 'rgba(255,255,255,0.22)',
-              }}
+              style={{ width: i === index ? 22 : 6, background: i === index ? accent : 'rgba(255,255,255,0.22)' }}
             />
           ))}
         </div>
       )}
 
-      {/* lightbox */}
       {lightbox && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/92 backdrop-blur-sm flex flex-col"
-          onClick={() => setLightbox(false)}
-        >
+        <div className="fixed inset-0 z-[60] bg-black/92 backdrop-blur-sm flex flex-col" onClick={() => setLightbox(false)}>
           <div className="flex items-center justify-between px-5 py-4 text-zinc-400">
             <span className="font-mono text-xs">{label} · {index + 1}/{count}</span>
             <button aria-label="Close" className="p-2 hover:text-white" onClick={() => setLightbox(false)}>

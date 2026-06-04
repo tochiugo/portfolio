@@ -19,6 +19,8 @@ function CustomCursor() {
   const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    // touch devices: no visible cursor — skip the listener + rAF loop entirely (saves mobile CPU/battery)
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(hover: none)').matches) return;
     const onMove = (e) => {
       mouse.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) { dotRef.current.style.left = `${e.clientX}px`; dotRef.current.style.top = `${e.clientY}px`; }
@@ -82,9 +84,10 @@ export default function App() {
 
       {/* MISSION CONTROL — homepage centerpiece */}
       <section id="mission-control" className="relative pt-28 pb-24 border-b border-white/10 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[#00E87A] blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-cyan-500 blur-[120px]" />
+        {/* decorative glow — skipped on mobile where large-radius blur is GPU-expensive */}
+        <div className="hidden md:block absolute inset-0 opacity-[0.07] pointer-events-none">
+          <div className="absolute top-10 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[#00E87A] blur-[90px]" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-cyan-500 blur-[90px]" />
         </div>
         <div className="relative"><MissionControl /></div>
       </section>

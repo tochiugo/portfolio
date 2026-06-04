@@ -10,21 +10,25 @@ const CYAN = '#38bdf8';
 // which a local bridge pushes to a gist every ~20s. No mock data.
 function useLiveStatus() {
   const [data, setData] = useState(null);
-  const [now, setNow] = useState(Date.now());
-  const [fetchedAt, setFetchedAt] = useState(0);
   const lastGood = useRef(null);
-
   const fetchStatus = useCallback(async () => {
     try {
       const r = await fetch(`${MC.statusUrl}?t=${Date.now()}`, { cache: 'no-store' });
       const d = await r.json();
-      if (d && d.metrics) { setData(d); lastGood.current = d; setFetchedAt(Date.now()); }
+      if (d && d.metrics) { setData(d); lastGood.current = d; }
     } catch { /* keep last good */ }
   }, []);
-
   useEffect(() => { fetchStatus(); const id = setInterval(fetchStatus, MC.pollIntervalMs); return () => clearInterval(id); }, [fetchStatus]);
-  useEffect(() => { const id = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(id); }, []);
-  return { data: data || lastGood.current, now, fetchedAt };
+  return { data: data || lastGood.current };
+}
+
+// tiny self-ticking leaves — only THESE re-render each second, not the whole dashboard
+function useSecond() { const [, set] = useState(0); useEffect(() => { const id = setInterval(() => set((n) => n + 1), 1000); return () => clearInterval(id); }, []); }
+function LiveUptime({ since }) { useSecond(); return <>{since ? fmtDuration(Date.now() - Date.parse(since)) : '—'}</>; }
+function LiveHeartbeat({ iso, online }) {
+  useSecond();
+  const sec = iso ? Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 1000)) : null;
+  return <span style={{ color: online ? ACCENT : RED }}>{sec == null ? '—' : `${sec}s ago`}</span>;
 }
 
 function fmtDuration(ms) {
@@ -58,12 +62,11 @@ function Row({ label, value, color }) {
 }
 
 export function MissionControl() {
-  const { data, now } = useLiveStatus();
+  const { data } = useLiveStatus();
   const m = data?.metrics || {};
-  const hbAgeSec = data?.last_heartbeat ? Math.floor((now - Date.parse(data.last_heartbeat)) / 1000) : null;
-  const online = data ? (data.status === 'online' && (hbAgeSec == null || hbAgeSec < MC.offlineThresholdSec)) : false;
+  const hbAgeAtRender = data?.last_heartbeat ? Math.floor((Date.now() - Date.parse(data.last_heartbeat)) / 1000) : null;
+  const online = data ? (data.status === 'online' && (hbAgeAtRender == null || hbAgeAtRender < MC.offlineThresholdSec)) : false;
   const isLive = data?.mode === 'LIVE';
-  const uptime = data?.run_started_at ? fmtDuration(now - Date.parse(data.run_started_at)) : '—';
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -102,8 +105,8 @@ export function MissionControl() {
           </div>
           <div className="mt-5 space-y-3">
             <Row label="Mode" value={data?.mode || '—'} color={isLive ? RED : AMBER} />
-            <Row label="Uptime · this run" value={uptime} />
-            <Row label="Last heartbeat" value={hbAgeSec == null ? '—' : `${hbAgeSec}s ago`} color={online ? ACCENT : RED} />
+            <Row label="Uptime · this run" value={<LiveUptime since={data?.run_started_at} />} />
+            <Row label="Last heartbeat" value={<LiveHeartbeat iso={data?.last_heartbeat} online={online} />} />
             <Row label="Health" value={data?.health?.state || '—'} color={online ? ACCENT : RED} />
             <Row label="Kill-switch" value={data?.signals?.killed ? 'TRIPPED' : 'clear'} color={data?.signals?.killed ? RED : ACCENT} />
             <Row label="Latest scan" value={data?.last_scan ? `#${nf(data.last_scan.id)} · ${data.last_scan.kind}` : `#${nf(m.latest_scan_id)}`} />

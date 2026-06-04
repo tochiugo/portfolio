@@ -4,7 +4,7 @@ import { personal, nav } from '../data/portfolio';
 export function Nav({ activeSection, scrollToSection }) {
   const [open, setOpen] = useState(false);
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10">
+    <header className="fixed top-0 inset-x-0 z-50 bg-black/85 backdrop-blur-md md:backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-16">
           <button onClick={() => scrollToSection('mission-control')} className="flex items-center gap-2 group">

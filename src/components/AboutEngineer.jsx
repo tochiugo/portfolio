@@ -14,6 +14,10 @@ export function AboutEngineer() {
             <img
               src={about.photo}
               alt={personal.name}
+              loading="lazy"
+              decoding="async"
+              width="128"
+              height="128"
               className="w-32 h-32 rounded-2xl object-cover border border-white/10 flex-shrink-0"
             />
             <div className="space-y-4 text-zinc-300 leading-relaxed text-[15px]">

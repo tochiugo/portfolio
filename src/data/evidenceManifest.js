@@ -1,71 +1,71 @@
 // AUTO-GENERATED from public/evidence/ — curated screenshot paths per project slug.
 const evidenceManifest = {
   "bet-bot": [
-    "/evidence/bet-bot/01.png",
-    "/evidence/bet-bot/02.png",
-    "/evidence/bet-bot/03.png",
-    "/evidence/bet-bot/04.png",
-    "/evidence/bet-bot/05.png"
+    "/evidence/bet-bot/01.webp",
+    "/evidence/bet-bot/02.webp",
+    "/evidence/bet-bot/03.webp",
+    "/evidence/bet-bot/04.webp",
+    "/evidence/bet-bot/05.webp"
   ],
   "fifteen-min": [
-    "/evidence/fifteen-min/01.png",
-    "/evidence/fifteen-min/02.png"
+    "/evidence/fifteen-min/01.webp",
+    "/evidence/fifteen-min/02.webp"
   ],
   "nexus-bot": [
-    "/evidence/nexus-bot/01.png",
-    "/evidence/nexus-bot/02.png"
+    "/evidence/nexus-bot/01.webp",
+    "/evidence/nexus-bot/02.webp"
   ],
   "nexus-drive": [
-    "/evidence/nexus-drive/01.png",
-    "/evidence/nexus-drive/02.png",
-    "/evidence/nexus-drive/03.png"
+    "/evidence/nexus-drive/01.webp",
+    "/evidence/nexus-drive/02.webp",
+    "/evidence/nexus-drive/03.webp"
   ],
   "polymarket": [
-    "/evidence/polymarket/01.png",
-    "/evidence/polymarket/02.png",
-    "/evidence/polymarket/03.png",
-    "/evidence/polymarket/04.png",
-    "/evidence/polymarket/05.png"
+    "/evidence/polymarket/01.webp",
+    "/evidence/polymarket/02.webp",
+    "/evidence/polymarket/03.webp",
+    "/evidence/polymarket/04.webp",
+    "/evidence/polymarket/05.webp"
   ],
   "polymarket-v3": [
-    "/evidence/polymarket-v3/01.png"
+    "/evidence/polymarket-v3/01.webp"
   ],
   "sharp": [
-    "/evidence/sharp/01.png"
+    "/evidence/sharp/01.webp"
   ],
   "sniper": [
-    "/evidence/sniper/01.png",
-    "/evidence/sniper/02.png",
-    "/evidence/sniper/03.png",
-    "/evidence/sniper/04.png"
+    "/evidence/sniper/01.webp",
+    "/evidence/sniper/02.webp",
+    "/evidence/sniper/03.webp",
+    "/evidence/sniper/04.webp"
   ],
   "soc": [
-    "/evidence/soc/alert_8816_detail.jpg",
-    "/evidence/soc/alert_queue.jpg",
-    "/evidence/soc/kali_nmap_scan.jpg",
-    "/evidence/soc/soc_dashboard.jpg",
-    "/evidence/soc/splunk_87_events.jpg",
-    "/evidence/soc/splunk_ip_filter.jpg",
-    "/evidence/soc/utm_vms.jpg",
-    "/evidence/soc/wireshark_capture.jpg"
+    "/evidence/soc/alert_8816_detail.webp",
+    "/evidence/soc/alert_queue.webp",
+    "/evidence/soc/kali_nmap_scan.webp",
+    "/evidence/soc/soc_dashboard.webp",
+    "/evidence/soc/splunk_87_events.webp",
+    "/evidence/soc/splunk_ip_filter.webp",
+    "/evidence/soc/utm_vms.webp",
+    "/evidence/soc/wireshark_capture.webp"
   ],
   "sporty": [
-    "/evidence/sporty/01.png"
+    "/evidence/sporty/01.webp"
   ],
   "tryon": [
-    "/evidence/tryon/01.jpg",
-    "/evidence/tryon/02.jpg",
-    "/evidence/tryon/03.jpg",
-    "/evidence/tryon/04.jpg",
-    "/evidence/tryon/05.jpg"
+    "/evidence/tryon/01.webp",
+    "/evidence/tryon/02.webp",
+    "/evidence/tryon/03.webp",
+    "/evidence/tryon/04.webp",
+    "/evidence/tryon/05.webp"
   ],
   "witnesspro": [
-    "/evidence/witnesspro/01.jpg",
-    "/evidence/witnesspro/02.jpg",
-    "/evidence/witnesspro/03.jpg",
-    "/evidence/witnesspro/04.jpg",
-    "/evidence/witnesspro/05.jpg",
-    "/evidence/witnesspro/06.jpg"
+    "/evidence/witnesspro/01.webp",
+    "/evidence/witnesspro/02.webp",
+    "/evidence/witnesspro/03.webp",
+    "/evidence/witnesspro/04.webp",
+    "/evidence/witnesspro/05.webp",
+    "/evidence/witnesspro/06.webp"
   ]
 };
 
