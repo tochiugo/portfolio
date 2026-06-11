@@ -21,6 +21,10 @@ DB = os.path.join(BOT_DIR, "data", "trades.db")
 INTERVAL = 20
 VERSION = "15.4.0"
 CODENAME = "V15.4"
+# First run executing the V15 architecture (V15 master commit 2026-06-10 05:05,
+# run 85 started 05:20). All primary metrics are scoped to run_id >= this so the
+# dashboard reports the CURRENT system, not the retired pre-V15 bots' history.
+V15_FIRST_RUN = int(os.environ.get("V15_FIRST_RUN", "85"))
 
 # log lines we will NOT surface (anything that could leak secrets/addresses)
 DENY = re.compile(r"(0x[a-fA-F0-9]{6,}|private|signer|secret|api[_-]?key|passphrase|balance-allowance|allowance|authorization|signature_type)", re.I)
@@ -111,6 +115,7 @@ def parse_log(lines):
 
 def read_db():
     d = {}
+    V = V15_FIRST_RUN
     try:
         con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True, timeout=4)
         con.execute("PRAGMA query_only=1")
@@ -120,35 +125,69 @@ def read_db():
         if r:
             d["run_id"], d["run_started_at"], d["run_mode"], d["bankroll_start"] = r[0], r[1], r[2], r[3]
         d["runs_total"] = cur.execute("select count(*) from runs").fetchone()[0]
-        # cumulative scan totals
-        s = cur.execute("select count(*), coalesce(sum(n_markets_seen),0), coalesce(sum(n_evaluated),0), coalesce(sum(n_proposed),0), coalesce(sum(n_traded),0) from scans").fetchone()
-        d["scans_total"], d["markets_seen"], d["evaluations"], d["proposed"], d["traded"] = s
-        d["latest_scan_id"] = cur.execute("select max(scan_id) from scans").fetchone()[0]
-        # trade stats overall + by mode
-        d["trades_total"] = cur.execute("select count(*) from trades").fetchone()[0]
-        d["wins"] = cur.execute("select count(*) from trades where pnl_usd>0").fetchone()[0]
-        d["losses"] = cur.execute("select count(*) from trades where pnl_usd<0").fetchone()[0]
-        d["total_pnl"] = round(cur.execute("select coalesce(sum(pnl_usd),0) from trades").fetchone()[0], 2)
-        d["open_positions"] = cur.execute("select count(*) from trades where outcome is null").fetchone()[0]
-        by = {m: (n, round(p or 0, 2)) for m, n, p in cur.execute("select mode, count(*), sum(pnl_usd) from trades group by mode").fetchall()}
+
+        # ── V15-era primary metrics (run_id >= V15_FIRST_RUN) ────────────────
+        d["trades_total"] = cur.execute("select count(*) from trades where run_id>=?", (V,)).fetchone()[0]
+        d["wins"] = cur.execute("select count(*) from trades where run_id>=? and pnl_usd>0", (V,)).fetchone()[0]
+        d["losses"] = cur.execute("select count(*) from trades where run_id>=? and pnl_usd<0", (V,)).fetchone()[0]
+        d["total_pnl"] = round(cur.execute("select coalesce(sum(pnl_usd),0) from trades where run_id>=?", (V,)).fetchone()[0], 2)
+        d["open_positions"] = cur.execute("select count(*) from trades where run_id>=? and outcome is null", (V,)).fetchone()[0]
+        d["exposure_usd"] = round(cur.execute("select coalesce(sum(size_usd),0) from trades where run_id>=? and outcome is null", (V,)).fetchone()[0], 2)
+        by = {m: (n, round(p or 0, 2)) for m, n, p in cur.execute(
+            "select mode, count(*), sum(pnl_usd) from trades where run_id>=? group by mode", (V,)).fetchall()}
         d["live_trades"] = by.get("live", (0, 0))[0]; d["live_pnl"] = by.get("live", (0, 0))[1]
         d["paper_trades"] = by.get("paper", (0, 0))[0]; d["paper_pnl"] = by.get("paper", (0, 0))[1]
-        # daily pnl (today, local)
+        # daily pnl (today, local) — V15 runs only, so retired bots can't pollute it
         today = dt.datetime.now().strftime("%Y-%m-%d")
         start = dt.datetime.strptime(today, "%Y-%m-%d").timestamp()
-        d["daily_pnl"] = round(cur.execute("select coalesce(sum(pnl_usd),0) from trades where timestamp>=?", (start,)).fetchone()[0], 2)
-        d["daily_trades"] = cur.execute("select count(*) from trades where timestamp>=?", (start,)).fetchone()[0]
-        # brier
-        b = cur.execute("select score, n_trades from brier_log order by id desc limit 1").fetchone()
-        if b:
-            d["brier"], d["brier_n"] = round(b[0], 4), b[1]
-        # recent trades
-        rows = cur.execute("select side, size_usd, entry_price, pnl_usd, outcome, mode, timestamp from trades order by id desc limit 8").fetchall()
+        d["daily_pnl"] = round(cur.execute("select coalesce(sum(pnl_usd),0) from trades where run_id>=? and timestamp>=?", (V, start)).fetchone()[0], 2)
+        d["daily_trades"] = cur.execute("select count(*) from trades where run_id>=? and timestamp>=?", (V, start)).fetchone()[0]
+        # calibration — V15 trades, judged as SKILL vs the market baseline
+        # (same standard as the bot's own governor / readiness gate G2)
+        b = cur.execute("""
+            select avg((mega_prob-outcome)*(mega_prob-outcome)),
+                   avg((market_prob-outcome)*(market_prob-outcome)), count(*) from (
+              select mega_prob, market_prob, outcome from trades
+              where run_id>=? and outcome is not null
+                and mega_prob is not null and market_prob is not null
+              order by resolved_at desc limit 200)""", (V,)).fetchone()
+        if b and b[0] is not None:
+            d["brier"], d["brier_market"] = round(b[0], 4), round(b[1], 4)
+            d["brier_skill"], d["brier_n"] = round(b[1] - b[0], 4), b[2]
+        # V15-era scan scale
+        s = cur.execute("""select count(*), coalesce(sum(n_markets_seen),0), coalesce(sum(n_evaluated),0)
+                           from scans where run_id>=?""", (V,)).fetchone()
+        d["scans_total"], d["markets_seen"], d["evaluations"] = s
+        d["latest_scan_id"] = cur.execute("select max(scan_id) from scans").fetchone()[0]
+        # recent V15 trades only
+        rows = cur.execute("select side, size_usd, entry_price, pnl_usd, outcome, mode, timestamp from trades where run_id>=? order by id desc limit 8", (V,)).fetchall()
         d["recent_trades"] = [{
             "side": s, "size": round(sz, 2), "price": round(ep, 3),
             "pnl": round(p, 2) if p is not None else None,
             "open": oc is None, "mode": md, "ts": ts,
         } for s, sz, ep, p, oc, md, ts in rows]
+
+        # ── governor + capital allocator state (V15 system_config) ──────────
+        gov = {}
+        for k, v in cur.execute("select parameter, value from system_config where parameter in ('mode_override','position_opening_suspended','sleeve_allocations','feed_health')").fetchall():
+            gov[k] = v
+        d["governor"] = {
+            "mode_override": gov.get("mode_override", "none"),
+            "opening_suspended": str(gov.get("position_opening_suspended", "false")).lower() == "true",
+            "feed_health": gov.get("feed_health"),
+        }
+        try:
+            d["sleeves"] = json.loads(gov.get("sleeve_allocations", "{}"))
+        except Exception:
+            d["sleeves"] = {}
+
+        # ── all-time scale (since v1 — every version, every run) ────────────
+        lt = cur.execute("""select count(*), coalesce(sum(n_markets_seen),0), coalesce(sum(n_evaluated),0) from scans""").fetchone()
+        lt_t = cur.execute("select count(*) from trades").fetchone()[0]
+        d["lifetime"] = {
+            "scans_completed": lt[0], "markets_scanned": lt[1], "evaluations": lt[2],
+            "trades_total": lt_t, "runs_total": d["runs_total"],
+        }
         con.close()
     except Exception as e:
         d["db_error"] = str(e)[:120]
@@ -166,8 +205,6 @@ def build_status():
         if pm:
             log["drivers"] = re.findall(r"'([^']+)'", pm.group(1))
             log["shadow"] = re.findall(r"'([^']+)'", pm.group(2))
-    if log.get("mode_live") is False and grep_last("Live CLOB executor active|LIVE TRADING"):
-        log["mode_live"] = True
     db = read_db()
     try:
         log_mtime = os.path.getmtime(LOG)
@@ -177,12 +214,22 @@ def build_status():
     win_rate = round(100 * db.get("wins", 0) / max(1, db.get("wins", 0) + db.get("losses", 0)), 1)
     bankroll = log.get("balance_usd") or db.get("bankroll_start")
     iso = lambda t: dt.datetime.utcfromtimestamp(t).isoformat() + "Z"
+    # Mode truth: the governor's own override wins (paper_forced = self-demoted
+    # to paper). Only the CURRENT run's recorded mode / recent log tail may
+    # claim LIVE — never a grep across the whole multi-run log history.
+    gov = db.get("governor", {})
+    if gov.get("mode_override") == "paper_forced":
+        mode = "PAPER"
+    else:
+        mode = "LIVE" if (db.get("run_mode") == "live" or log.get("mode_live")) else "PAPER"
     return {
         "system": "Polymarket Mission Control",
         "codename": CODENAME, "version": VERSION,
-        "mode": "LIVE" if log.get("mode_live") or db.get("run_mode") == "live" else "PAPER",
+        "mode": mode,
         "status": "online" if fresh else "offline",
         "source": "real",
+        "scope": "V15",  # primary metrics cover the V15 system only
+        "v15_first_run": V15_FIRST_RUN,
         "generated_at": iso(now),
         "last_heartbeat": iso(log_mtime),
         "run_id": db.get("run_id"), "runs_total": db.get("runs_total"),
@@ -192,6 +239,8 @@ def build_status():
             "signals_active": log.get("signals_active") or 14,
             "log_age_sec": int(now - log_mtime),
         },
+        "governor": gov,
+        "sleeves": db.get("sleeves", {}),
         "metrics": {
             "markets_scanned": db.get("markets_seen"),
             "evaluations": db.get("evaluations"),
@@ -199,14 +248,16 @@ def build_status():
             "latest_scan_id": db.get("latest_scan_id"),
             "trades_total": db.get("trades_total"),
             "wins": db.get("wins"), "losses": db.get("losses"), "win_rate": win_rate,
-            "open_positions": log.get("open_orders") if log.get("open_orders") is not None else db.get("open_positions"),
+            "open_positions": db.get("open_positions"),
             "total_pnl": db.get("total_pnl"),
             "daily_pnl": db.get("daily_pnl"), "daily_trades": db.get("daily_trades"),
             "live_trades": db.get("live_trades"), "live_pnl": db.get("live_pnl"),
             "paper_trades": db.get("paper_trades"), "paper_pnl": db.get("paper_pnl"),
-            "bankroll_usd": bankroll, "exposure_usd": log.get("exposure_usd"),
-            "brier": db.get("brier"), "brier_n": db.get("brier_n"),
+            "bankroll_usd": bankroll, "exposure_usd": db.get("exposure_usd"),
+            "brier": db.get("brier"), "brier_market": db.get("brier_market"),
+            "brier_skill": db.get("brier_skill"), "brier_n": db.get("brier_n"),
         },
+        "lifetime": db.get("lifetime", {}),
         "markets": log.get("assets", []),
         "signals": {"drivers": log.get("drivers", []), "shadow": log.get("shadow", []), "killed": log.get("killed")},
         "last_scan": log.get("last_scan"),

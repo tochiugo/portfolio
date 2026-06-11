@@ -141,7 +141,7 @@ function generateResponse({ intent, slug }) {
       projects.forEach((p) => { (byCat[p.category] ||= []).push(p.name); });
       const list = Object.entries(byCat).map(([c, names]) => `**${c}:** ${names.join(', ')}`).join('\n');
       return R(
-        `Here's the ecosystem — ${projects.length} systems plus WitnessPro (iOS) and the Nexus concept:\n\n${list}\n\nAsk me about any one by name and I'll give you the architecture, highlights, and stack.`,
+        `Here's the ecosystem — ${projects.length} systems plus WitnessPro (iOS):\n\n${list}\n\nAsk me about any one by name and I'll give you the architecture, highlights, and stack.`,
         ['Tell me about the V15.4 engine', 'What is Bet Bot / Aviator?', 'Tell me about Nexus Bot', 'Tell me about TryOn']
       );
     }
@@ -225,14 +225,17 @@ export function NexusAI() {
         const m = d.metrics || {};
         const f = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
         const money = (n) => (n == null ? '—' : `${n < 0 ? '-' : ''}$${Math.abs(Number(n)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+        const gv = d.governor || {};
+        const lt = d.lifetime || {};
         responseText =
-          `Here's the bot **right now** — straight from its live log + trade ledger:\n\n` +
-          `• Status: **${(d.status || '').toUpperCase()}** · mode **${d.mode}** (run #${d.run_id})\n` +
-          `• Total PnL: **${money(m.total_pnl)}** across ${f(m.trades_total)} trades · ${m.win_rate}% win rate\n` +
+          `Here's the **V15 system right now** — straight from its live log + trade ledger:\n\n` +
+          `• Status: **${(d.status || '').toUpperCase()}** · mode **${d.mode}**${gv.mode_override === 'paper_forced' ? ' (governor self-demoted to paper until calibration clears)' : ''} · run #${d.run_id}\n` +
+          `• V15 PnL: **${money(m.total_pnl)}** across ${f(m.trades_total)} V15 trades · ${m.win_rate}% win rate\n` +
           `• PnL today: **${money(m.daily_pnl)}** · live (real-money) PnL: **${money(m.live_pnl)}** over ${f(m.live_trades)} trades\n` +
           `• Open positions: ${f(m.open_positions)} · bankroll ~${money(m.bankroll_usd)}\n` +
-          `• Markets scanned: **${f(m.markets_scanned)}** · ${f(m.evaluations)} evaluations · Brier ${m.brier}\n\n` +
-          `Scroll up to **Mission Control** for the full live dashboard — it refreshes every few seconds.`;
+          `• Calibration: Brier **${m.brier ?? '—'}** vs market ${m.brier_market ?? '—'}${m.brier_skill != null ? ` (skill ${m.brier_skill > 0 ? '+' : ''}${m.brier_skill})` : ''}\n` +
+          `• All-time scale: **${f(lt.markets_scanned ?? m.markets_scanned)}** markets scanned · ${f(lt.trades_total ?? m.trades_total)} recorded trades across ${f(lt.runs_total ?? d.runs_total)} runs\n\n` +
+          `Numbers are scoped to the V15 architecture (the current system) — the all-time line covers every version since v1. Scroll up to **Mission Control** for the full live dashboard.`;
         chips = ['How is the bot architected?', 'What signals does it run?', 'Is this real?'];
       } catch {
         responseText = "I couldn't reach the live feed this second — the Mission Control dashboard at the top of the page has the latest real numbers.";

@@ -121,7 +121,7 @@ export default function App() {
       <footer className="border-t border-white/10 py-8 bg-black">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-zinc-500">
-            © 2026 <span className="text-zinc-300">{personal.name}</span> · Software & Automation Engineer · {personal.location}
+            © 2026 <span className="text-zinc-300">{personal.name}</span> · {personal.title} · {personal.location}
           </p>
           <div className="flex flex-wrap gap-4 items-center">
             <a href={personal.linkedin} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-zinc-500 hover:text-[#00E87A]">LinkedIn</a>

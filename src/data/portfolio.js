@@ -52,8 +52,9 @@ export const missionControl = {
     "This is the real thing — a live, 24/7 AI trading system running against Polymarket and Kalshi " +
     "prediction markets, now on its V15 architecture: a fund, not a bot. The dashboard reads straight " +
     "from the system's own runtime log and SQLite ledger — real scans, real trades, real PnL including " +
-    "the losses, across 8M+ markets scanned, 15,000+ recorded trades, and 89 production runs. No mock " +
-    "data, no cherry-picking.",
+    "the losses. Primary metrics cover the V15 system itself; the all-time strip (8M+ markets scanned, " +
+    "15,000+ recorded trades, 89 production runs) spans every version since v1. No mock data, no " +
+    "cherry-picking.",
   strategyNote:
     "V15 runs as a portfolio of independent strategy sleeves — Kalshi cross-price, sports divergence, " +
     "weather, and a $1 'probe' book for unproven edges — each with its own P&L and drawdown budget under " +

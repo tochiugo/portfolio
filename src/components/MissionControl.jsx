@@ -64,12 +64,17 @@ function Row({ label, value, color }) {
 export function MissionControl() {
   const { data } = useLiveStatus();
   const m = data?.metrics || {};
+  const lt = data?.lifetime || {};
+  const gov = data?.governor || {};
+  const sleeves = Object.entries(data?.sleeves || {}).filter(([k]) => k !== 'UNKNOWN');
+  const paperForced = gov.mode_override === 'paper_forced';
   const hbAgeAtRender = data?.last_heartbeat ? Math.floor((Date.now() - Date.parse(data.last_heartbeat)) / 1000) : null;
   const connecting = !data;
   const online = data ? (data.status === 'online' && (hbAgeAtRender == null || hbAgeAtRender < MC.offlineThresholdSec)) : false;
   const isLive = data?.mode === 'LIVE';
   const statusLabel = connecting ? 'CONNECTING' : online ? 'ONLINE' : 'OFFLINE';
   const statusColor = connecting ? AMBER : online ? ACCENT : RED;
+  const sleeveStyle = (x) => (x >= 2 ? { c: ACCENT, label: 'proven' } : x === 0 ? { c: RED, label: 'paused' } : x < 1 ? { c: AMBER, label: 'starved' } : { c: '#a1a1aa', label: 'neutral' });
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -88,7 +93,7 @@ export function MissionControl() {
         </div>
         <span className={`inline-flex items-center gap-2 self-start whitespace-nowrap rounded-full border px-3 py-1.5 font-mono text-xs ${isLive ? 'border-red-500/50 text-red-300' : 'border-amber-400/40 text-amber-300'}`}>
           <span className="w-1.5 h-1.5 rounded-full soc-pulse flex-shrink-0" style={{ background: isLive ? RED : AMBER }} />
-          {isLive ? 'LIVE TRADING · real money' : 'PAPER / shadow'}
+          {isLive ? 'LIVE TRADING · real money' : paperForced ? 'PAPER · governor self-demoted' : 'PAPER / shadow'}
         </span>
       </div>
 
@@ -111,6 +116,7 @@ export function MissionControl() {
             <Row label="Uptime · this run" value={<LiveUptime since={data?.run_started_at} />} />
             <Row label="Last heartbeat" value={<LiveHeartbeat iso={data?.last_heartbeat} online={online} />} />
             <Row label="Health" value={data?.health?.state || '—'} color={online ? ACCENT : RED} />
+            <Row label="Governor" value={paperForced ? 'paper-forced' : gov.mode_override && gov.mode_override !== 'none' ? gov.mode_override : 'clear'} color={paperForced ? AMBER : ACCENT} />
             <Row label="Kill-switch" value={data?.signals?.killed ? 'TRIPPED' : 'clear'} color={data?.signals?.killed ? RED : ACCENT} />
             <Row label="Latest scan" value={data?.last_scan ? `#${nf(data.last_scan.id)} · ${data.last_scan.kind}` : `#${nf(m.latest_scan_id)}`} />
           </div>
@@ -121,26 +127,51 @@ export function MissionControl() {
           )}
         </div>
 
-        {/* trading metrics */}
+        {/* trading metrics — scoped to the V15 system (not the retired pre-V15 bots) */}
         <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Metric label="Total PnL" value={money(m.total_pnl)} color={pnlColor(m.total_pnl)} sub={`${nf(m.trades_total)} trades`} />
+          <Metric label="PnL · V15 era" value={money(m.total_pnl)} color={pnlColor(m.total_pnl)} sub={`${nf(m.trades_total)} V15 trades`} />
           <Metric label="PnL Today" value={money(m.daily_pnl)} color={pnlColor(m.daily_pnl)} sub={`${nf(m.daily_trades)} trades today`} />
-          <Metric label="Win Rate" value={m.win_rate != null ? `${m.win_rate}%` : '—'} color={CYAN} sub={`${nf(m.wins)}W · ${nf(m.losses)}L`} />
-          <Metric label="Open Positions" value={nf(m.open_positions)} color={m.open_positions > 0 ? AMBER : '#fff'} sub={isLive ? 'live book' : 'dry-run'} />
-          <Metric label="Live PnL" value={money(m.live_pnl)} color={pnlColor(m.live_pnl)} sub={`${nf(m.live_trades)} real-money`} />
+          <Metric label="Win Rate · V15" value={m.win_rate != null ? `${m.win_rate}%` : '—'} color={CYAN} sub={`${nf(m.wins)}W · ${nf(m.losses)}L`} />
+          <Metric label="Open Positions" value={nf(m.open_positions)} color={m.open_positions > 0 ? AMBER : '#fff'} sub={isLive ? 'live book' : 'paper book'} />
+          <Metric label="Live PnL · V15" value={money(m.live_pnl)} color={pnlColor(m.live_pnl)} sub={`${nf(m.live_trades)} real-money`} />
           <Metric label="Bankroll" value={money(m.bankroll_usd)} sub={`exposure ${money(m.exposure_usd)}`} />
-          <Metric label="Brier Score" value={m.brier ?? '—'} color={CYAN} sub={`last ${m.brier_n ?? 50} trades`} />
-          <Metric label="Shadow PnL" value={money(m.paper_pnl)} color={pnlColor(m.paper_pnl)} sub={`${nf(m.paper_trades)} recorded`} />
+          <Metric label="Brier · V15" value={m.brier ?? '—'} color={CYAN} sub={m.brier_skill != null ? `mkt ${m.brier_market} · skill ${m.brier_skill > 0 ? '+' : ''}${m.brier_skill}` : `last ${m.brier_n ?? 50} trades`} />
+          <Metric label="Shadow PnL · V15" value={money(m.paper_pnl)} color={pnlColor(m.paper_pnl)} sub={`${nf(m.paper_trades)} recorded`} />
         </div>
       </div>
 
-      {/* scale metrics */}
+      <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-zinc-600">
+        Primary metrics cover the V15 system only (run ≥ {data?.v15_first_run ?? 85}, since Jun 10 2026). All-time scale across every version below.
+      </p>
+
+      {/* all-time scale metrics — every version, every run, since v1 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-        <Metric label="Markets Scanned" value={nf(m.markets_scanned)} color={ACCENT} sub="cumulative" />
-        <Metric label="Evaluations" value={nf(m.evaluations)} color={ACCENT} sub="market assessments" />
-        <Metric label="Scans Completed" value={nf(m.scans_completed)} sub={`scan #${nf(m.latest_scan_id)}`} />
-        <Metric label="Total Trades" value={nf(m.trades_total)} sub={`${nf(m.live_trades)} live · ${nf(m.paper_trades)} shadow`} />
+        <Metric label="Markets Scanned" value={nf(lt.markets_scanned ?? m.markets_scanned)} color={ACCENT} sub="all-time · since v1" />
+        <Metric label="Evaluations" value={nf(lt.evaluations ?? m.evaluations)} color={ACCENT} sub="all-time · since v1" />
+        <Metric label="Scans Completed" value={nf(lt.scans_completed ?? m.scans_completed)} sub={`scan #${nf(m.latest_scan_id)}`} />
+        <Metric label="Recorded Trades" value={nf(lt.trades_total)} sub={`across ${nf(lt.runs_total ?? data?.runs_total)} runs · all versions`} />
       </div>
+
+      {/* capital allocator — the V15 sleeve multipliers, read live from system_config */}
+      {sleeves.length > 0 && (
+        <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5 mt-5">
+          <h3 className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">Capital Allocator · per-sleeve multipliers (Bayesian, live)</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {sleeves.map(([name, x]) => {
+              const s = sleeveStyle(Number(x));
+              return (
+                <div key={name} className="flex items-center justify-between gap-2 rounded-lg bg-black/30 border border-white/5 px-3 py-2">
+                  <span className="font-mono text-xs text-zinc-200">{name}</span>
+                  <span className="font-mono text-[11px] tabular-nums" style={{ color: s.c }}>{Number(x)}× · {s.label}</span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-2.5 font-mono text-[10px] text-zinc-600">
+            Sleeves earn capital with out-of-sample proof: 2× proven · 1× neutral · 0.25× starved · 0× paused.
+          </p>
+        </div>
+      )}
 
       {/* signals + markets */}
       <div className="grid md:grid-cols-2 gap-5 mt-5">
