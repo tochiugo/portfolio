@@ -1,20 +1,21 @@
 # Tochi Ugochukwu — Engineering Platform
 
-A proof-driven portfolio. Not a résumé site — a living engineering ecosystem where
-every claim is backed by real runtime evidence.
+A proof-driven portfolio, live at **[tochiugo.com](https://tochiugo.com)**. Not a résumé
+site — a living engineering platform where every claim is backed by real runtime evidence.
 
-**Live centerpiece:** a public-safe, dry-run **Mission Control** dashboard for a
-Polymarket trading system (heartbeats, market scans, signal evaluations, runtime logs),
-followed by a shipped iOS product (**WitnessPro**), a 10-project ecosystem with swipeable
-evidence galleries, a confidential-but-teased digital-human concept (**Nexus**), and an
-embedded engineering assistant (**ATLAS**).
+**Live centerpiece:** Mission Control — a public-safe dashboard wired to the **real,
+running Polymarket/Kalshi trading system (V15.4)**. It streams the system's actual
+trade ledger, PnL (including losses), calibration, governor state, and sleeve capital
+allocations. Below it: a native iOS product (**WitnessPro**), a home **SOC lab**, a
+10-project ecosystem with swipeable evidence galleries, and an embedded assistant
+(**ATLAS**).
 
 ## Stack
 
 - **React 18 + Vite** single-page app
 - **Tailwind CSS** (dark, operational aesthetic)
-- Client-only — no backend, no tracking, no data leaves the browser
-- Mission Control reads a `status.json` heartbeat feed (see `mission-control/`)
+- Client-only UI — no tracking, no data leaves the browser
+- One serverless function (`api/status.js`) proxies the live bot feed
 
 ## Develop
 
@@ -22,8 +23,9 @@ embedded engineering assistant (**ATLAS**).
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # production build -> dist/
-npm run preview  # preview the production build
 ```
+
+Deploys via `vercel --prod` (no git auto-deploy).
 
 ## Structure
 
@@ -32,31 +34,37 @@ src/
   App.jsx                  section composition + scroll spy
   data/
     portfolio.js           single source of truth (projects, copy, timeline)
-    evidenceManifest.js     auto-generated curated screenshot paths
+    evidenceManifest.js    auto-generated curated screenshot paths
   components/
-    MissionControl.jsx     live status dashboard (the homepage centerpiece)
+    MissionControl.jsx     live V15 dashboard (the homepage centerpiece)
     SwipeGallery.jsx       reusable swipeable gallery (touch / arrows / lightbox)
-    WitnessProSection.jsx  App Store-quality iOS product section
+    WitnessProSection.jsx  iOS product section
     ProjectEcosystem.jsx   filterable project grid with galleries
-    NexusSection.jsx       confidential, public-safe teaser
-    AboutEngineer.jsx · EvidenceRepo.jsx · ContactSection.jsx · Nav.jsx
+    SocLab.jsx             home SOC lab (Splunk / Chronicle / MITRE)
+    AboutEngineer.jsx · Experience.jsx · Certifications.jsx
+    EvidenceRepo.jsx · ContactSection.jsx · Nav.jsx
     NexusAI.jsx            ATLAS — client-side engineering assistant
 public/
-  status.json             live Mission Control feed (dry-run seed)
+  resume.html / resume.pdf the résumé (web + one-click PDF)
   evidence/<project>/      curated, public-safe screenshots
+api/
+  status.js                Vercel function: reads the live feed (GitHub gist)
 mission-control/
-  update_status.py        bot-side writer (sanitized, every 30s) + README
+  live_status_bridge.py    bot-side bridge (sanitized, every ~20s, via pm2)
 ```
 
 ## Mission Control feed
 
-The bot writes a sanitized `status.json` every 30s; the site polls it. If the heartbeat
-goes stale the dashboard flips to OFFLINE with a downtime counter, and back to ONLINE when
-fresh heartbeats return. See [`mission-control/README.md`](mission-control/README.md).
+`live_status_bridge.py` runs next to the bot (pm2), reads its `bot.log` + SQLite trade
+ledger **read-only**, and pushes a sanitized `status.json` to a GitHub gist every ~20s;
+the site polls it through `/api/status`. Primary metrics are scoped to the current V15
+system (`run_id >= V15_FIRST_RUN`); an all-time block carries the cumulative scale. If
+the heartbeat goes stale the dashboard flips to OFFLINE automatically and recovers on
+the next heartbeat. See [`mission-control/README.md`](mission-control/README.md).
 
 ## Evidence & privacy
 
 Screenshots are the curated public slice of a larger per-project evidence repository.
-All captures are public-safe: no wallets, keys, tokens, credentials, or precise PII
-(location overlays in the WitnessPro shots are redacted). The Polymarket bot and Nexus
-ecosystem source remain private.
+All captures are public-safe: no wallets, keys, tokens, credentials, or precise PII.
+The bridge whitelists fields and strips anything matching addresses or secrets before
+publishing. The trading system's source is not published here.

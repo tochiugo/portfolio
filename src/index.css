@@ -15,6 +15,11 @@ html {
   overflow-x: hidden;
 }
 
+/* anchor-link targets clear the fixed 64px header instead of hiding under it */
+[id] {
+  scroll-margin-top: 84px;
+}
+
 body {
   background: #000;
   color: #fff;

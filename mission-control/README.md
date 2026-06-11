@@ -4,63 +4,61 @@ The portfolio homepage renders a live operational dashboard for the Polymarket
 **V15.4** system. It is driven by one small contract:
 
 ```
-bot  ──writes every 30s──▶  status.json  ──read by──▶  portfolio dashboard
+bot (bot.log + trades.db)
+   │  read-only, every ~20s
+   ▼
+live_status_bridge.py  ──▶  status.json  ──▶  GitHub gist  ──▶  /api/status  ──▶  dashboard
+        (pm2)                                                  (Vercel fn)        (polls 15s)
 ```
 
-That's the whole design. No websockets to the browser, no backend to babysit —
-just a JSON file the bot keeps fresh and the site polls.
+No websockets to the browser, no backend to babysit — a sanitized JSON snapshot
+the bridge keeps fresh and the site polls.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `update_status.py` | Writes a **sanitized, public-safe** `status.json` every 30s. |
-| `../public/status.json` | The status file the portfolio reads (seed committed for the dry-run demo). |
+| `live_status_bridge.py` | The real bridge. Runs next to the bot under pm2 (`pm-live-bridge`), reads `bot.log` + `data/trades.db` **read-only**, pushes a sanitized `status.json` to a gist every ~20s. |
+| `update_status.py` | Legacy reference writer (dry-run demo telemetry). Superseded by the bridge; kept for documentation. |
 
 ## Run it
 
 ```bash
-# continuous (writes every 30s)
-python3 update_status.py --out ../public/status.json
+# next to the bot, kept alive by pm2
+python3 live_status_bridge.py --gist <GIST_ID>
 
-# single snapshot
-python3 update_status.py --out ../public/status.json --once
+# single snapshot (debugging)
+python3 live_status_bridge.py --gist <GIST_ID> --once
 ```
+
+## What it publishes
+
+- **V15-scoped primary metrics** (`run_id >= V15_FIRST_RUN`, default 85): PnL,
+  daily PnL, win rate, open positions, exposure, live/shadow split, recent trades.
+  Retired pre-V15 runs cannot pollute these numbers.
+- **Calibration as skill**: rolling Brier for the model *and* the market baseline,
+  plus the skill differential — the same standard as the bot's readiness gate.
+- **Governor + allocator state**: `mode_override` (e.g. `paper_forced` when the
+  system self-demotes), opening-suspended flag, live sleeve capital multipliers.
+- **All-time scale** (`lifetime`): cumulative markets scanned, evaluations, scans,
+  trades, runs — across every version since v1.
+- The live signal policy (drivers vs. shadow) and a cleaned `bot.log` tail.
 
 ## How ONLINE / OFFLINE is decided
 
-The portfolio reads `last_heartbeat` from `status.json`:
-
-- **fresh** (heartbeat within ~90s) → dashboard shows **ONLINE** with live uptime.
-- **stale** (bot stopped writing) → dashboard flips to **OFFLINE**, showing
-  *Last Seen* and a running *Downtime* counter.
-- bot comes back → next fresh heartbeat flips it back to **ONLINE** automatically.
-
-Because "offline" is just "the file stopped changing," nothing extra has to be
-wired up for the down/recovery behavior to work.
+`last_heartbeat` is the bot.log mtime. Fresh (< 5 min) → **ONLINE**; stale →
+**OFFLINE** automatically; next fresh heartbeat flips it back. Because "offline"
+is just "the file stopped changing," down/recovery needs no extra wiring.
 
 ## Public-safe guarantee
 
-`update_status.py` emits **only** the fields in its `PUBLIC_FIELDS` whitelist.
-It never reads or writes:
+The bridge emits **only** whitelisted fields and never reads `.env`. A DENY
+regex drops any log line containing `0x…` addresses, signer/key/secret material,
+or balance-allowance payloads. Wallet keys, addresses, and API secrets never
+leave the machine. The PnL shown is real — including losses — by design.
 
-- wallet private keys, funder addresses, key passphrases
-- CLOB / Builder API keys or secrets
-- real position sizes, real PnL, or account balances
+## Mode truth
 
-The reference build emits **dry-run** telemetry. To surface real (still sanitized)
-numbers, replace `read_bot_state()` with a reader for your bot's own state/log
-files and copy across only whitelisted public fields.
-
-## Deploying the feed
-
-The site fetches `VITE_STATUS_URL` (defaults to `/status.json`, same origin).
-Point it wherever the bot can publish:
-
-- **Same origin** — bot writes into the deployed `public/status.json` (simplest if
-  the bot and site share a host).
-- **Object store / gist** — bot uploads `status.json`; set
-  `VITE_STATUS_URL=https://…/status.json` at build time.
-
-If the feed is unreachable or stale, the dashboard runs a clearly-labeled
-**public dry-run** telemetry stream so the centerpiece is never blank.
+The governor's `mode_override` wins: `paper_forced` ⇒ the dashboard says PAPER
+no matter what historical log lines claim. Only the current run's recorded mode
+(or a live marker in the recent log tail) may report LIVE.

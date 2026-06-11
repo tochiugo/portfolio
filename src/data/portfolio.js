@@ -37,6 +37,7 @@ export const nav = [
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'certs', label: 'Certs' },
+  { id: 'evidence', label: 'Evidence' },
   { id: 'contact', label: 'Contact' },
 ];
 

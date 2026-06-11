@@ -50,7 +50,7 @@ function classifyIntent(text) {
 
   const has = (...terms) => terms.some((term) => t.includes(term));
   if (has('how is the bot', 'bot doing', 'how is it doing', 'how is it performing', 'current pnl', 'live pnl', 'live numbers', "pnl", "p&l", 'how much profit', 'how much has', 'bot status', 'doing right now', 'how is the trading')) return { intent: 'bot_status' };
-  if (has('hello', 'hi ', 'hey', 'good morning', 'good afternoon', 'howdy')) return { intent: 'greeting' };
+  if (/\b(hi|hello|hey|yo|howdy)\b/.test(t) || has('good morning', 'good afternoon', 'good evening')) return { intent: 'greeting' };
   if (has('thank', 'awesome', 'great', 'perfect', 'nice')) return { intent: 'thanks' };
   if (has('bye', 'goodbye', 'see you', 'later', 'take care')) return { intent: 'goodbye' };
   if (has('mission control', 'dashboard', 'live system', 'status', 'online', 'offline', 'heartbeat', 'uptime', 'dry run', 'dry-run')) return { intent: 'mission_control' };
