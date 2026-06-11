@@ -4,6 +4,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/((?!api/|evidence/|images/|assets/|resume.html|og-preview|robots|sitemap|favicon|status.json).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|evidence/|images/|assets/|resume\\.|og-preview|robots|sitemap|favicon|status.json).*)", "destination": "/index.html" }
   ]
 }

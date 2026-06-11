@@ -33,10 +33,14 @@ export function ContactSection() {
         ))}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex flex-wrap justify-center items-center gap-3">
+        <a href="/resume.pdf" download="Tochi_Ugochukwu_Resume.pdf"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-sm font-semibold bg-[#00E87A] text-black hover:bg-[#00E87A]/90 transition-colors">
+          <span>⬇</span> Download Résumé (PDF)
+        </a>
         <a href="/resume.html" target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-sm border border-[#00E87A]/40 text-[#00E87A] hover:bg-[#00E87A]/10 transition-colors">
-          <span>⬇</span> View / Download Résumé
+          View web version
         </a>
       </div>
 

@@ -172,7 +172,7 @@ function generateResponse({ intent, slug }) {
 
     case 'resume':
       return R(
-        `${personal.name.split(' ')[0]}'s résumé is available right here — open **/resume.html** (linked in the Contact section and the footer) and use "Save as PDF / Print".\n\nIt covers the AI/automation projects (Polymarket Mission Control, SHARP, WitnessPro, the bot ecosystem), security lab experience, CompTIA Security+ and Google certificates, and work history. Honestly though — this whole site is the deeper proof; the résumé is just the one-page version.`,
+        `${personal.name.split(' ')[0]}'s résumé downloads in one click — the **Download Résumé (PDF)** button in the Contact section grabs **/resume.pdf** directly, and there's a web version at /resume.html.\n\nIt covers the V15.4 Polymarket trading engine, WitnessPro, the automation ecosystem, security lab experience, CompTIA Security+ and Google certificates, founder experience, and work history. This whole site is the deeper proof; the résumé is the recruiter-friendly summary.`,
         ['Is he available to hire?', 'List all projects', 'How do I contact him?']
       );
 
