@@ -61,8 +61,8 @@ function classifyIntent(text) {
   if (has('cert', 'security+', 'comptia', 'google cyber', 'tryhackme', 'credential', 'education', 'ged', 'degree', 'qualified')) return { intent: 'certs' };
   if (has('architecture', 'how does it work', 'how do you build', 'design', 'how is it built', 'engineering decision')) return { intent: 'architecture' };
   if (has('evidence', 'proof', 'screenshot', 'logs', 'how do i know', 'verify', 'real')) return { intent: 'evidence' };
-  if (has('project', 'built', 'what has he', 'what did he', 'portfolio', 'systems', 'show me')) return { intent: 'projects' };
   if (has('skill', 'tech', 'stack', 'language', 'tools', 'technolog')) return { intent: 'tech' };
+  if (has('project', 'built', 'what has he', 'what did he', 'portfolio', 'systems', 'show me')) return { intent: 'projects' };
   if (has('hire', 'available', 'job', 'role', 'open to', 'recruit', 'looking', 'opportunity')) return { intent: 'hiring' };
   if (has('resume', 'résumé', 'cv', 'download')) return { intent: 'resume' };
   if (has('contact', 'email', 'reach', 'phone', 'call', 'linkedin', 'github')) return { intent: 'contact' };
