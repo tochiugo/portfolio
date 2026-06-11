@@ -84,7 +84,7 @@ function generateResponse({ intent, slug }) {
 
     case 'identity':
       return R(
-        `**${personal.name}** — ${personal.title} in ${personal.location}.\n\n${personal.pitch}\n\nThe range spans live trading engines (Python/asyncio with real risk controls and Brier calibration), a SwiftUI iOS product (WitnessPro), Node orchestration fusing news/crypto/AI signals, and Playwright automation against live UIs. Everything here is backed by runtime logs, databases, and screenshots — not slideware.`,
+        `**${personal.name}** — ${personal.title} in ${personal.location}.\n\n${personal.pitch}\n\nThe range spans live trading engines (Python/asyncio with real risk controls and Brier calibration), a SwiftUI iOS product (WitnessPro), Node orchestration fusing news/crypto/AI signals, and Playwright automation against live UIs. Everything here is backed by runtime logs, databases, and screenshots.`,
         ['Show me Mission Control', 'What projects has he built?', 'How is the evidence verified?', 'How do I contact him?']
       );
 
@@ -160,7 +160,7 @@ function generateResponse({ intent, slug }) {
 
     case 'hiring':
       return R(
-        `Status: actively open.\n\nTarget roles: ${personal.targetRoles.join(' · ')}.\n\nWhat he brings: shipped systems you can actually inspect — a live trading engine with risk controls, a SwiftUI iOS product, Node/Python automation, and applied-AI tooling — each backed by runtime evidence. He optimizes for teams where shipping and operating real systems beats slideware.\n\nFastest contact: ${personal.email} · ${personal.phone}`,
+        `Status: actively open.\n\nTarget roles: ${personal.targetRoles.join(' · ')}.\n\nWhat he brings: shipped systems you can inspect — a live trading engine with risk controls, a SwiftUI iOS product, Node/Python automation, and applied-AI tooling — each backed by runtime evidence. He's at his best on teams that ship and operate real systems.\n\nFastest contact: ${personal.email} · ${personal.phone}`,
         ['How do I contact him?', 'Where is he located?', 'What has he built?']
       );
 

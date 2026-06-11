@@ -21,8 +21,8 @@ export const personal = {
     'Automation Engineer', 'Applied AI Engineer', 'Software Engineer',
   ],
   pitch:
-    "I build systems that run — not slide decks. A live AI trading engine (V15.4) with sleeve-based " +
-    "capital allocation, real risk controls, and calibration; a SwiftUI iOS evidence app; " +
+    "I build and operate systems that run in production. A live AI trading engine (V15.4) with " +
+    "sleeve-based capital allocation, real risk controls, and calibration; a SwiftUI iOS evidence app; " +
     "browser-automation pipelines; AI-driven tooling; and a home SOC lab where I triage and document " +
     "real investigations. CompTIA Security+ certified, with 10+ years of building and running " +
     "businesses behind it.",
