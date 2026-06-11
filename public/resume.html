@@ -50,7 +50,7 @@
   <div class="page">
     <header>
       <h1>Tochi Ugochukwu</h1>
-      <div class="role">AI Builder · Automation Developer · Software Engineer</div>
+      <div class="role">Software &amp; Automation Engineer · Applied AI · Trading Systems</div>
       <div class="contact">
         Los Angeles, CA · <a href="mailto:tu@tochiugo.com">tu@tochiugo.com</a> · (317) 833-2695 ·
         <a href="https://tochiugo.com">tochiugo.com</a> ·
@@ -60,15 +60,17 @@
     </header>
 
     <h2>Professional Summary</h2>
-    <p class="summary">Self-taught AI builder and automation developer with 2–3 years of hands-on experience building
-      production-grade automation systems, AI-powered applications, and autonomous trading systems. Specializes in rapid
-      prototyping with modern AI development tools (Claude Code, Cursor, Codex, Gemini) to architect and ship LLM-integrated
-      applications, automation pipelines, and live operational systems. CompTIA Security+ certified. Available immediately.</p>
+    <p class="summary">Self-taught software and automation engineer who designs, ships, and operates production systems:
+      a live AI trading engine (15,000+ recorded trades across 89 production runs, with Bayesian capital allocation, layered
+      risk controls, and full decision provenance), a native iOS evidence-capture app, and a portfolio of automation
+      pipelines — each backed by runtime logs and operational evidence. Builds rapidly with modern AI development tools
+      (Claude Code, Cursor, Codex, Gemini). CompTIA Security+ certified, with 10+ years of founder experience building and
+      running businesses. Available immediately.</p>
 
     <h2>Core Skills</h2>
     <div class="skills">
       <p><b>AI Development Tools:</b> Claude Code · OpenAI Codex · Cursor · Gemini · ChatGPT · GitHub Copilot · Windsurf · Bolt · v0 · Replit AI</p>
-      <p><b>AI / LLM Engineering:</b> Python · Pandas · NumPy · LLM Integration · RAG Pipelines · Vector Search · Embeddings · Prompt Engineering · Generative AI Workflows · Multi-Agent Orchestration</p>
+      <p><b>AI / ML Engineering:</b> Python · Pandas · NumPy · XGBoost · Model Calibration (Brier) · LLM Integration · RAG Pipelines · Vector Search · Embeddings · Prompt Engineering · Multi-Agent Orchestration</p>
       <p><b>Automation & Systems:</b> Event-Driven Pipelines · REST APIs · WebSockets · PostgreSQL · SQLite · Telegram API · Docker · Git · Cron · Process Automation</p>
       <p><b>Languages & Tools:</b> Python · TypeScript · JavaScript · Bash · Swift · Node.js · Linux · Vercel · JSON · YAML · CI/CD basics</p>
       <p><b>Security:</b> CompTIA Security+ · Splunk SPL · Google Chronicle · YARA-L · MITRE ATT&amp;CK · NIST IR · Wireshark · Kali Linux · Nmap · IOC Analysis</p>
@@ -76,13 +78,14 @@
 
     <h2>AI / ML & Automation Projects</h2>
     <div class="job">
-      <div class="job-head"><span class="job-title">Polymarket AI Trading Bot — Mission Control (V12-53)</span><span class="job-meta">2023 — Present</span></div>
-      <div class="sub">Personal Project · Operational (public dry-run dashboard at tochiugo.com)</div>
+      <div class="job-head"><span class="job-title">Polymarket AI Trading Engine — Mission Control (V15.4)</span><span class="job-meta">2023 — Present</span></div>
+      <div class="sub">Personal Project · Operational 24/7 (live public dashboard at tochiugo.com)</div>
       <ul>
-        <li>Architected a multi-signal trading engine (latency-arb, flash-crash, late-window) over a tick-level Binance feed and the Polymarket CLOB/Gamma APIs.</li>
-        <li>Event-driven pipeline: ingest → signal evaluation → Kelly-sized entries → execution → SQLite persistence with Brier calibration and a full audit trail.</li>
-        <li>Risk layer with kill-switch, exposure caps, and SL/TP exits; encrypted key handling (PBKDF2 + Fernet); paper-trading by default.</li>
-        <li>Built a live, public-safe "Mission Control" dashboard surfacing heartbeats, market scans, evaluations, and runtime logs.</li>
+        <li>Architected a five-layer trading system — autonomous governor, Bayesian capital allocator, independent strategy sleeves with per-sleeve P&amp;L and drawdown budgets, pre-trade risk veto chain, and execution with per-fill transaction-cost analysis — over the Polymarket CLOB/Gamma and Kalshi APIs.</li>
+        <li>Operated across 89 production runs: 8M+ markets scanned, 4.5M+ evaluations, and 15,000+ recorded trades persisted to a SQLite provenance store where every decision is replayable end-to-end.</li>
+        <li>Integrated an XGBoost model with a quality gate (veto power only above 0.55 validation AUC) and automatic retraining on resolved trades; probability calibration scored as skill against the market baseline.</li>
+        <li>Implemented maker-entry execution that recovers a measured 1.9% taker spread cost, gated behind a 7-criteria objective live-readiness scorecard; encrypted key handling (PBKDF2 + Fernet).</li>
+        <li>Built the public "Mission Control" dashboard: a sanitized bridge publishes live metrics — PnL, win rate, calibration, open positions, and a log tail — with all secrets whitelisted out.</li>
       </ul>
     </div>
     <div class="job">
@@ -94,16 +97,10 @@
       </ul>
     </div>
     <div class="job">
-      <div class="job-head"><span class="job-title">SHARP — Multi-Phase Automated Trading System (Kalshi / Polymarket)</span><span class="job-meta">2024</span></div>
+      <div class="job-head"><span class="job-title">Automation Ecosystem — Nexus Bot · SHARP · 15 Minutes · SportyBot · Bet Bot · Nexus Drive · TryOn</span><span class="job-meta">2022 — Present</span></div>
       <ul>
-        <li>6-signal dual-path entry engine targeting 15-minute crypto contracts across 7 assets, with whale-wall detection and EV-ranked sizing.</li>
-        <li>Parallel Kalshi/Polymarket execution via REST APIs with resilient WebSocket reconnect behavior and daily reporting.</li>
-      </ul>
-    </div>
-    <div class="job">
-      <div class="job-head"><span class="job-title">Automation Ecosystem — Nexus Bot · SportyBot · Bet Bot · Nexus Drive · TryOn</span><span class="job-meta">2022 — Present</span></div>
-      <ul>
-        <li>Node orchestration fusing Kalshi, news, crypto, economics, and weather signals with LLM-based scoring; Playwright browser-automation bots with DB-backed state; an Expo / React Native virtual try-on app with a render pipeline.</li>
+        <li>Node.js orchestration fusing Kalshi markets, news, crypto, economics, and weather signals with LLM-based scoring (Nexus Bot); high-frequency scalping automation with resilient WebSocket reconnects and daily JSON reporting (SHARP, 15 Minutes).</li>
+        <li>Playwright browser automation with SQLite-backed bet tracking and Telegram notifications (SportyBot, Bet Bot); on-device Android automation with phase-based scheduling (Nexus Drive); an Expo / React Native virtual try-on app with a credit-metered render pipeline (TryOn).</li>
       </ul>
     </div>
 
@@ -119,10 +116,24 @@
 
     <h2>Experience</h2>
     <div class="job">
-      <div class="job-head"><span class="job-title">Correctional Officer — State of Indiana, Dept. of Corrections</span><span class="job-meta">Oct 2022 – Apr 2025</span></div>
+      <div class="job-head"><span class="job-title">Founder &amp; CEO — Meridian Nexus Global LLC</span><span class="job-meta">Mar 2025 – Present</span></div>
+      <div class="sub">Los Angeles, CA · International Trade &amp; Vehicle Export</div>
+      <ul>
+        <li>Founded and operate an international logistics and vehicle-export business serving U.S. and Nigerian markets; built internal automation for operations, lead management, and shipment tracking.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <div class="job-head"><span class="job-title">Founder &amp; CEO — Tochiugo Global Mark Limited</span><span class="job-meta">2012 – Present</span></div>
+      <div class="sub">Nigeria · Manufacturing &amp; Distribution (family-managed since U.S. relocation)</div>
+      <ul>
+        <li>Built a manufacturing and distribution company around TOCHIUGO BOND, a proprietary ISO 9001:2000-certified aluminium-composite-panel brand, with a supply chain spanning China and Brazil; operated it directly for 10 years.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <div class="job-head"><span class="job-title">Correctional Officer — State of Indiana, Dept. of Corrections</span><span class="job-meta">Oct 2024 – Apr 2025</span></div>
       <div class="sub">Pendleton, IN</div>
       <ul>
-        <li>Monitored security systems and maintained operational logs while independently building AI/automation systems and earning cybersecurity credentials.</li>
+        <li>Monitored facility security systems and produced structured incident documentation while independently building AI/automation systems and earning cybersecurity credentials.</li>
       </ul>
     </div>
 

@@ -21,10 +21,11 @@ export const personal = {
     'Automation Engineer', 'Applied AI Engineer', 'Software Engineer',
   ],
   pitch:
-    "I build systems that run — not slide decks. A live trading engine with risk controls and " +
-    "calibration, a SwiftUI iOS evidence app, browser-automation pipelines, AI-driven tooling, and a " +
-    "home SOC lab where I triage and document real investigations. CompTIA Security+ certified, with " +
-    "10+ years of building and running businesses behind it.",
+    "I build systems that run — not slide decks. A live AI trading engine (V15.4) with sleeve-based " +
+    "capital allocation, real risk controls, and calibration; a SwiftUI iOS evidence app; " +
+    "browser-automation pipelines; AI-driven tooling; and a home SOC lab where I triage and document " +
+    "real investigations. CompTIA Security+ certified, with 10+ years of building and running " +
+    "businesses behind it.",
 };
 
 // Top navigation — order matters: proof first, person second.
@@ -42,30 +43,36 @@ export const nav = [
 // ── Mission Control (homepage centerpiece) ──────────────────────────────────
 export const missionControl = {
   system: 'Polymarket Mission Control',
-  codename: 'V12-53',
+  codename: 'V15.4',
   statusUrl: import.meta.env.VITE_STATUS_URL || '/api/status',
   // heartbeat (bot.log mtime) older than this (seconds) => OFFLINE
   offlineThresholdSec: 300,
   pollIntervalMs: 15000,
   summary:
-    "This is the real thing — a live, 24/7 multi-signal trading engine running against Polymarket " +
-    "and Kalshi prediction markets. The dashboard below reads straight from the bot's own runtime " +
-    "log and SQLite trade ledger: real scans, real trades, real PnL, real calibration. No mock data.",
+    "This is the real thing — a live, 24/7 AI trading system running against Polymarket and Kalshi " +
+    "prediction markets, now on its V15 architecture: a fund, not a bot. The dashboard reads straight " +
+    "from the system's own runtime log and SQLite ledger — real scans, real trades, real PnL including " +
+    "the losses, across 8M+ markets scanned, 15,000+ recorded trades, and 89 production runs. No mock " +
+    "data, no cherry-picking.",
   strategyNote:
-    "Fourteen signals run in parallel. Four are live DRIVERS that can place real orders " +
-    "(soccer / sports / tennis Elo and a Kalshi cross-price signal); the other ten run in SHADOW mode — " +
-    "recorded at zero weight so they can be validated on real data before being promoted. Every order " +
-    "passes a Kelly sizer, a min-edge gate, daily-loss and exposure caps, a circuit breaker, and a " +
-    "kill-switch, with Brier calibration tracking probability accuracy over the last 50 trades.",
-  stack: ['Python', 'asyncio', 'Polymarket CLOB/Gamma', 'Kalshi', 'Coinbase/Binance feeds', 'SQLite', 'Brier calibration', 'provenance/run tracking'],
+    "V15 runs as a portfolio of independent strategy sleeves — Kalshi cross-price, sports divergence, " +
+    "weather, and a $1 'probe' book for unproven edges — each with its own P&L and drawdown budget under " +
+    "a Bayesian capital allocator that scales proven sleeves up (2×) and starves or pauses underperformers. " +
+    "Above them sits a pre-trade risk authority (edge and price bands, trend guard, cluster caps, a " +
+    "net-drawdown kill-switch) and an autonomous governor that audits the machine every 50 resolved trades " +
+    "and demotes it to paper when calibration slips. An XGBoost brain retrains on resolved trades but may " +
+    "veto entries only while its validation AUC holds above 0.55 — influence here is default-deny: nothing " +
+    "trades real capital without out-of-sample proof. The driver/shadow panel above is the live policy, " +
+    "read from the running system.",
+  stack: ['Python', 'asyncio', 'XGBoost', 'SQLite', 'Polymarket CLOB/Gamma', 'Kalshi', 'Coinbase/Binance feeds', 'Bayesian allocation', 'Kelly sizing', 'Brier calibration', 'TCA', 'pm2'],
   // Engineering evolution — real capabilities, layered over many runs.
   timeline: [
-    { v: 'Signals', title: 'Multi-Signal Core', body: '14 signal sources — sports Elo, Kalshi cross-price, order-book, momentum, weather, political polls.' },
-    { v: 'Shadow', title: 'Shadow Validation', body: 'New signals run at 0-weight first, recorded against real outcomes before they can trade live.' },
-    { v: 'Risk', title: 'Risk Engine', body: 'Kelly sizing, min-edge gate, daily-loss & exposure caps, circuit breaker, kill-switch.' },
-    { v: 'Calib', title: 'Calibration', body: 'Brier score over the last 50 trades; per-signal PnL attribution in SQLite.' },
-    { v: 'Prov', title: 'Provenance', body: 'Every run stamped with git commit, signal-set hash, and env snapshot for reproducibility.' },
-    { v: 'Live', title: 'Live Execution', body: 'CLOB executor placing real orders on Polymarket — real money, real reconciliation. Run 58+.' },
+    { v: 'Prov', title: 'Provenance Core', body: 'Every decision, input, weight, and outcome recorded in SQLite — any trade replayable end-to-end. (v12)' },
+    { v: 'Gov', title: 'Autonomous Governor', body: 'Self-tuning policy checks that raise edge floors, blacklist losing assets, and self-demote to paper — every action logged with reasoning. (V14)' },
+    { v: 'Brain', title: 'ML Brain + Quality Gate', body: 'XGBoost model auto-retrains on resolved trades; it earns veto power only at validation AUC ≥ 0.55. Unskilled models observe — they don\'t rule. (V14–15)' },
+    { v: 'Fund', title: 'Sleeves + Allocator', body: 'Independent P&L books per edge source under a Bayesian capital allocator: 2× proven, 1× neutral, 0.25× starved, 0× drawdown-paused. (V15)' },
+    { v: 'Desks', title: 'Cross-Venue Desks', body: 'Dutch-book arbitrage scanner and a Kalshi↔Polymarket sports divergence desk, guarded by a feed-freshness sentinel. (V15.2–15.3)' },
+    { v: 'V15.4', title: 'Maker Entry + Readiness Gate', body: 'Passive maker entries recover a measured −1.9% taker spread cost; a 7-gate objective scorecard decides when the machine may trade real money.' },
   ],
 };
 
@@ -268,18 +275,51 @@ export const certifications = {
 // status: Operational | Shipped | Prototype | Research
 export const projects = [
   {
+    slug: 'polymarket',
+    name: 'Polymarket Engine — V15.4',
+    category: 'Trading System',
+    status: 'Operational',
+    published: false,
+    tagline: 'The live AI engine behind Mission Control — a fund, not a bot.',
+    stack: ['Python', 'asyncio', 'XGBoost', 'SQLite', 'Kalshi', 'Polymarket CLOB/Gamma', 'pm2'],
+    summary:
+      "The system Mission Control monitors live, evolved over 89 production runs and 15 major versions. " +
+      "V15 restructured it from a single-brain bot into an institutional design: independent strategy " +
+      "sleeves with per-sleeve P&L and drawdown budgets, a Bayesian capital allocator, a pre-trade risk " +
+      "veto chain, and an autonomous governor that tunes policy and self-demotes to paper when calibration " +
+      "slips. V15.4 added passive maker-entry execution — recovering a measured −1.9% taker spread cost — " +
+      "and a 7-gate objective live-readiness scorecard.",
+    highlights: [
+      '5-layer architecture: governance → capital allocation → sleeves → risk authority → execution + TCA, on a full provenance record',
+      'XGBoost brain with a quality gate — it earns veto power only at validation AUC ≥ 0.55',
+      'Transaction-cost analysis on every fill, measured against the decision book',
+      'Calibration judged as skill vs. the market baseline — not an absolute Brier threshold',
+      'Honest ledger: every loss recorded and published live, including $1 "probe tuition" trades',
+    ],
+    metrics: [{ label: 'Version', value: 'V15.4' }, { label: 'Runs', value: '89' }, { label: 'Trades', value: '15K+' }],
+    images: evidence.polymarket,
+    captions: [
+      'Boot — configuration banner and subsystem initialization.',
+      'Live market scan — Polymarket BTC/ETH markets with mid/spread.',
+      'Structured evaluation log — signal gating and skip/act decisions.',
+      'Trade ledger — resolved-trade rows persisted to the database.',
+      'Operational status — uptime, risk state, and running Brier score.',
+    ],
+  },
+  {
     slug: 'polymarket-v3',
     name: 'Polymarket Bot V3',
     category: 'Trading System',
     status: 'Operational',
     published: false,
-    tagline: 'Latency-arb + flash-crash + late-window, with real exits.',
+    tagline: 'The earlier architecture: latency-arb + flash-crash + late-window.',
     stack: ['Python', 'asyncio', 'Binance WS', 'py-clob-client', 'SQLite', 'Fernet/PBKDF2'],
     summary:
-      "The architecture behind Mission Control. Three strategies share a data layer (tick-level Binance " +
-      "feed, Gamma market discovery, CLOB websocket with REST fallback), an execution layer (2s position " +
-      "monitor, paper router with 0.5% slippage, gasless CLOB redemption, encrypted key signer), and a " +
-      "risk layer (kill-switch, exposure cap, Brier auto-tightening). Paper-trading by default.",
+      "An earlier generation of the engine, kept as a clean reference architecture. Three strategies share " +
+      "a data layer (tick-level Binance feed, Gamma market discovery, CLOB websocket with REST fallback), " +
+      "an execution layer (2s position monitor, paper router with 0.5% slippage, gasless CLOB redemption, " +
+      "encrypted key signer), and a risk layer (kill-switch, exposure cap, Brier auto-tightening). " +
+      "Paper-trading by default.",
     highlights: [
       'Latency-Arb edge: Binance @trade stream sub-100ms, acts before Polymarket reprices',
       'Encrypted key handling — PBKDF2 + Fernet, never plaintext',
@@ -289,33 +329,6 @@ export const projects = [
     metrics: [{ label: 'Strategies', value: '3' }, { label: 'Scan interval', value: '2s' }, { label: 'Default mode', value: 'Paper' }],
     images: evidence['polymarket-v3'],
     captions: ['V3 runtime — async scan loop wiring data, strategy, execution, and risk modules.'],
-  },
-  {
-    slug: 'polymarket',
-    name: 'Polymarket Bot (Operational)',
-    category: 'Trading System',
-    status: 'Operational',
-    published: false,
-    tagline: 'Long-running process with a real trade ledger and Brier score.',
-    stack: ['Python', 'SQLite', 'systemd/pm2', 'Telegram'],
-    summary:
-      "The operations-hardened lineage: a persistent process exposing PID / uptime / CPU / memory, a " +
-      "structured trade ledger, and a live bot.log streaming scans, resolutions, risk updates, and a " +
-      "running Brier score. Subsystems span signals, calibration, risk, execution, research, and forensics.",
-    highlights: [
-      'Live status output: PID, uptime, CPU, memory',
-      'Structured trade ledger + calibration/trades.db',
-      'bot.log shows scans, resolutions, and risk updates in real time',
-    ],
-    metrics: [{ label: 'State', value: 'Long-running' }, { label: 'Ledger', value: 'SQLite' }, { label: 'Calibration', value: 'Brier' }],
-    images: evidence.polymarket,
-    captions: [
-      'Boot — configuration banner and subsystem initialization.',
-      'Live market scan — Polymarket BTC/ETH markets with mid/spread.',
-      'Structured evaluation log — signal gating and skip/act decisions.',
-      'Trade ledger — resolved-trade rows persisted to the database.',
-      'Operational status — uptime, risk state, and running Brier score.',
-    ],
   },
   {
     slug: 'sniper',
@@ -514,7 +527,7 @@ export const techStack = {
   Languages: ['Python', 'JavaScript / TypeScript', 'Swift', 'Node.js', 'Bash'],
   'Mobile & UI': ['SwiftUI', 'AVFoundation', 'React Native', 'Expo', 'React', 'Tailwind'],
   'Automation & Data': ['Playwright', 'WebSockets', 'asyncio', 'SQLite', 'REST APIs'],
-  'Trading & AI': ['Polymarket CLOB/Gamma', 'Kalshi', 'Binance feeds', 'Claude / LLM scoring', 'Brier calibration', 'Kelly sizing'],
+  'Trading & AI': ['Polymarket CLOB/Gamma', 'Kalshi', 'Binance feeds', 'XGBoost', 'Claude / LLM scoring', 'Bayesian allocation', 'Brier calibration', 'Kelly sizing'],
 };
 
 export default {

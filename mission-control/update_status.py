@@ -31,8 +31,8 @@ import tempfile
 import time
 
 HEARTBEAT_INTERVAL = 30  # seconds — matches the contract the portfolio expects
-VERSION = "12.53.0"
-CODENAME = "V12-53"
+VERSION = "15.4.0"
+CODENAME = "V15.4"
 BOOT_TIME = dt.datetime.now(dt.timezone.utc)
 
 # Whitelist of fields that are allowed to leave this process. Anything not here

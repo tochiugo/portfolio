@@ -1,7 +1,7 @@
 # Mission Control — live status bridge
 
 The portfolio homepage renders a live operational dashboard for the Polymarket
-**V12-53** system. It is driven by one small contract:
+**V15.4** system. It is driven by one small contract:
 
 ```
 bot  ──writes every 30s──▶  status.json  ──read by──▶  portfolio dashboard

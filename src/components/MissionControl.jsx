@@ -97,7 +97,7 @@ export function MissionControl() {
         <div className={`lg:col-span-1 rounded-2xl border p-6 ${online ? 'border-[#00E87A]/30 bg-[#00E87A]/[0.04]' : connecting ? 'border-white/15 bg-zinc-900/40' : 'border-red-500/40 bg-red-500/[0.05]'}`}>
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">System Status</span>
-            <span className="font-mono text-[10px] text-zinc-500">v{data?.version || '12.53.0'}</span>
+            <span className="font-mono text-[10px] text-zinc-500">v{data?.version || '15.4.0'}</span>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <span className="relative flex h-3.5 w-3.5">

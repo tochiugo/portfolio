@@ -10,8 +10,8 @@ const ATLAS = 'ATLAS';
 
 // ── retrieval: build a keyword index over projects + sections ────────────────
 const PROJECT_KEYWORDS = {
-  'polymarket-v3': ['v3', 'latency', 'arb', 'flash crash', 'late window', 'kelly', 'brier', 'clob', 'gamma', 'binance'],
-  polymarket: ['polymarket bot', 'trade ledger', 'operational bot', 'brier', 'pid', 'uptime'],
+  polymarket: ['v15', 'sleeve', 'allocator', 'governor', 'maker entry', 'readiness gate', 'tca', 'xgboost', 'brain', 'fund', 'polymarket engine', 'polymarket bot', 'trade ledger', 'operational bot', 'brier', 'pid', 'uptime'],
+  'polymarket-v3': ['v3', 'latency', 'flash crash', 'late window', 'clob', 'gamma'],
   sniper: ['sniper', 'phase', 'audit', 'reasoning'],
   'bet-bot': ['bet bot', 'aviator', 'crash game', 'sportybet', 'multiplier', 'cash out'],
   'nexus-bot': ['nexus bot', 'kalshi', 'perigon', 'news', 'weather', 'economics', 'claude scoring', 'scalper'],
@@ -91,13 +91,13 @@ function generateResponse({ intent, slug }) {
     case 'mission_control':
       return R(
         `**Mission Control** is the homepage centerpiece — and it's **the real, live bot**, not a demo. A bridge reads the running bot's own \`bot.log\` and SQLite trade ledger and pushes a sanitized snapshot every ~20s; the dashboard renders it through a \`/api/status\` proxy.\n\nIt shows real numbers: live/total PnL, daily PnL, total trades, win rate, open positions, bankroll, Brier calibration, cumulative markets scanned and evaluations, the real signal policy, recent trades, and a live tail of the bot log. If the bot's log goes quiet, it flips to OFFLINE automatically.\n\n${missionControl.strategyNote}\n\nWhat's hidden: wallet keys, addresses, and API secrets never leave the machine — only public-safe metrics are published.`,
-        ['How is the bot architected?', 'What signals does it run?', 'Tell me about Polymarket V3', 'Is this real?']
+        ['How is the bot architected?', 'What signals does it run?', 'Tell me about the V15.4 engine', 'Is this real?']
       );
 
     case 'trading':
       return R(
-        `Tochi runs several trading/automation systems. The flagship is the **Polymarket** stack behind Mission Control:\n\n${missionControl.strategyNote}\n\nEvery strategy carries SL/TP exits, a 10-minute trend filter, and Kelly position sizing, with a kill-switch and exposure cap in the risk layer. It's paper-trading by default — zero real money until explicitly flipped.\n\nBeyond Polymarket: **Nexus Bot** (Kalshi + news + crypto + AI scoring), **15 Minutes** (time-windowed Kalshi), **SHARP** (high-frequency scalper), plus betting automation (**Bet Bot / Aviator**, **SportyBot**).`,
-        ['Tell me about Polymarket V3', 'What is Nexus Bot?', 'How is risk handled?', 'List all projects']
+        `Tochi runs several trading/automation systems. The flagship is the **Polymarket Engine V15.4** behind Mission Control:\n\n${missionControl.strategyNote}\n\nEvery order is Kelly-sized and must pass the full veto chain before execution; live trading is additionally gated by a 7-gate objective readiness scorecard (governor clearance, calibration skill, a proven sleeve, live feeds, hardened execution, and more). Until every gate is green, real-money size stays capped at probe level.\n\nBeyond Polymarket: **Nexus Bot** (Kalshi + news + crypto + AI scoring), **15 Minutes** (time-windowed Kalshi), **SHARP** (high-frequency scalper), plus betting automation (**Bet Bot / Aviator**, **SportyBot**).`,
+        ['Tell me about the V15.4 engine', 'What is Nexus Bot?', 'How is risk handled?', 'List all projects']
       );
 
     case 'witnesspro':
@@ -126,8 +126,8 @@ function generateResponse({ intent, slug }) {
 
     case 'architecture':
       return R(
-        `A few representative engineering decisions:\n\n**Polymarket V3** — clean separation: a data layer (tick-level Binance feed, Gamma market discovery, CLOB websocket with REST fallback), a strategy layer (latency-arb / flash-crash / late-window over a shared base), an execution layer (2s position monitor, paper router with 0.5% slippage, encrypted-key signer using PBKDF2+Fernet), and a risk layer (kill-switch, exposure cap, Brier auto-tightening).\n\n**Mission Control** — intentionally tiny contract: the bot writes \`status.json\` every 30s; the site polls it. "Offline" is just "the file stopped changing," so down/recovery needs no extra wiring.\n\n**WitnessPro** — built on AVCaptureMultiCamSession with sealed metadata so evidence keeps chain-of-custody even when PII is hidden on screen.\n\n**Nexus Bot** — modular signal sources (news/crypto/economics/weather) feeding a Claude-scored decision loop, with a parallel scalper.`,
-        ['Tell me about Polymarket V3', 'How does Mission Control stay live?', 'How is the evidence organized?', 'What is the full tech stack?']
+        `A few representative engineering decisions:\n\n**Polymarket Engine V15.4** — structured like a fund, not a bot. Five layers: an autonomous governor (self-tuning policy with an audit trail), a Bayesian capital allocator (per-sleeve multipliers: 2× proven / 0.25× starved / 0× paused), independent strategy sleeves with their own P&L books, a pre-trade risk veto chain, and execution with transaction-cost analysis on every fill — all on a replayable provenance record. The XGBoost brain only earns veto power at validation AUC ≥ 0.55, and V15.4's maker-entry mode recovers a measured −1.9% taker spread cost.\n\n**Mission Control** — intentionally tiny contract: the bot writes \`status.json\` every ~20s; the site polls it. "Offline" is just "the file stopped changing," so down/recovery needs no extra wiring.\n\n**WitnessPro** — built on AVCaptureMultiCamSession with sealed metadata so evidence keeps chain-of-custody even when PII is hidden on screen.\n\n**Nexus Bot** — modular signal sources (news/crypto/economics/weather) feeding a Claude-scored decision loop, with a parallel scalper.`,
+        ['Tell me about the V15.4 engine', 'How does Mission Control stay live?', 'How is the evidence organized?', 'What is the full tech stack?']
       );
 
     case 'evidence':
@@ -142,7 +142,7 @@ function generateResponse({ intent, slug }) {
       const list = Object.entries(byCat).map(([c, names]) => `**${c}:** ${names.join(', ')}`).join('\n');
       return R(
         `Here's the ecosystem — ${projects.length} systems plus WitnessPro (iOS) and the Nexus concept:\n\n${list}\n\nAsk me about any one by name and I'll give you the architecture, highlights, and stack.`,
-        ['Tell me about Polymarket V3', 'What is Bet Bot / Aviator?', 'Tell me about Nexus Bot', 'Tell me about TryOn']
+        ['Tell me about the V15.4 engine', 'What is Bet Bot / Aviator?', 'Tell me about Nexus Bot', 'Tell me about TryOn']
       );
     }
 

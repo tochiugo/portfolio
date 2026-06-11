@@ -19,8 +19,8 @@ BOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(BOT_DIR, "bot.log")
 DB = os.path.join(BOT_DIR, "data", "trades.db")
 INTERVAL = 20
-VERSION = "12.53.0"
-CODENAME = "V12-53"
+VERSION = "15.4.0"
+CODENAME = "V15.4"
 
 # log lines we will NOT surface (anything that could leak secrets/addresses)
 DENY = re.compile(r"(0x[a-fA-F0-9]{6,}|private|signer|secret|api[_-]?key|passphrase|balance-allowance|allowance|authorization|signature_type)", re.I)
