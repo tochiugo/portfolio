@@ -44,7 +44,7 @@ export function EvidenceRepo() {
               {[
                 ['View Screenshots', '#witnesspro'],
                 ['View Runtime Evidence', '#mission-control'],
-                ['View Logs & Databases', '#projects'],
+                ['View Logs & Databases', '#soc-lab'],
                 ['View Engineering Artifacts', '#projects'],
               ].map(([a, href]) => (
                 <a key={a} href={href}

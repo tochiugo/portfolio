@@ -68,7 +68,7 @@ export default function App() {
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 70;
+      const y = el.getBoundingClientRect().top + window.scrollY - 84;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };

@@ -312,7 +312,7 @@ export const projects = [
     slug: 'polymarket-v3',
     name: 'Polymarket Bot V3',
     category: 'Trading System',
-    status: 'Operational',
+    status: 'Research',
     published: false,
     tagline: 'The earlier architecture: latency-arb + flash-crash + late-window.',
     stack: ['Python', 'asyncio', 'Binance WS', 'py-clob-client', 'SQLite', 'Fernet/PBKDF2'],
@@ -518,7 +518,7 @@ export const evidenceRepo = {
     "strongest few shots per project — not the full dump.",
   sections: ['01 Overview', '02 Runtime', '03 Logs', '04 Database', '05 Code', '06 Screenshots', '07 Resume Evidence'],
   stats: [
-    { label: 'Projects documented', value: '13' },
+    { label: 'Projects documented', value: '12' },
     { label: 'Screenshots reviewed', value: '200+' },
     { label: 'Curated to', value: '43' },
     { label: 'Evidence sections', value: '7' },
