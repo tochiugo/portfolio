@@ -51,10 +51,9 @@ export const hero = {
 
 // Top navigation — order matters: proof first, person second.
 export const nav = [
-  { id: 'top', label: 'Home' },
+  { id: 'top', label: 'About' },
   { id: 'mission-control', label: 'Mission Control' },
   { id: 'witnesspro', label: 'WitnessPro' },
-  { id: 'about', label: 'About' },
   { id: 'soc-lab', label: 'SOC Lab' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
@@ -138,9 +137,9 @@ export const witnessPro = {
 export const about = {
   photo: '/images/tochi_ugochukwu.jpg',
   paragraphs: [
-    "You've now seen a live trading system and a shipped iOS product. Here's the person who built them: " +
-    "I'm Tochi Ugochukwu — a cybersecurity & automation engineer in Los Angeles, and a founder who has " +
-    "been building and running real businesses for over a decade.",
+    "I'm <strong class=\"text-white\">Tochi Ugochukwu</strong> — a cybersecurity & automation engineer in " +
+    "Los Angeles, and a founder who has been building and running real businesses for over a decade. " +
+    "Below this you'll find the proof: a live trading system, a shipped iOS product, a home SOC lab, and more.",
     "My range is wide on purpose. Python trading engines with real risk controls and Brier calibration. " +
     "A SwiftUI iOS app touching low-level AVFoundation. Node orchestration fusing news, crypto, and AI " +
     "signals. Playwright automation against live UIs. And a home SOC lab where I triage simulated " +

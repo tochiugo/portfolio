@@ -5,7 +5,6 @@ import { Hero } from './components/Hero';
 import { Reveal } from './components/Reveal';
 import { MissionControl } from './components/MissionControl';
 import { WitnessProSection } from './components/WitnessProSection';
-import { AboutEngineer } from './components/AboutEngineer';
 import { SocLab } from './components/SocLab';
 import { ProjectEcosystem } from './components/ProjectEcosystem';
 import { Experience } from './components/Experience';
@@ -98,9 +97,6 @@ export default function App() {
 
       {/* WITNESSPRO */}
       <section id="witnesspro" className="py-24 border-b border-white/10"><ErrorBoundary name="witnesspro"><Reveal><WitnessProSection /></Reveal></ErrorBoundary></section>
-
-      {/* ABOUT */}
-      <section id="about" className="py-24 border-b border-white/10"><ErrorBoundary name="about"><Reveal><AboutEngineer /></Reveal></ErrorBoundary></section>
 
       {/* SOC LAB */}
       <section id="soc-lab" className="py-24 border-b border-white/10"><ErrorBoundary name="soc-lab"><Reveal><SocLab /></Reveal></ErrorBoundary></section>
