@@ -11,7 +11,7 @@ export function WitnessProSection() {
           <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-zinc-500">
             <span>📱</span> Shipped iOS Product
           </div>
-          <h2 className="mt-3 font-syne text-4xl sm:text-5xl font-extrabold tracking-tight">{W.name}</h2>
+          <h2 className="mt-3 font-syne text-4xl sm:text-5xl font-extrabold tracking-tight text-gradient">{W.name}</h2>
           <p className="mt-3 text-lg text-zinc-300 max-w-2xl">{W.tagline}</p>
           <p className="mt-1 font-mono text-xs text-zinc-500">{W.platform}</p>
         </div>
@@ -41,7 +41,7 @@ export function WitnessProSection() {
 
           <div className="mt-7 grid sm:grid-cols-2 gap-4">
             {W.features.map((f) => (
-              <div key={f.title} className="rounded-xl border border-white/10 bg-zinc-900/40 p-4">
+              <div key={f.title} className="rounded-xl border border-white/10 bg-zinc-900/40 p-4 card-lift">
                 <div className="text-2xl mb-2">{f.icon}</div>
                 <div className="font-syne font-semibold text-white">{f.title}</div>
                 <div className="text-sm text-zinc-400 mt-1 leading-snug">{f.body}</div>

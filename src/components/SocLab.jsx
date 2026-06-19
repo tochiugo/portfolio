@@ -12,7 +12,7 @@ export function SocLab() {
           <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-zinc-500">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00E87A] soc-pulse" /> Security Operations · Live Lab
           </div>
-          <h2 className="mt-3 font-syne text-4xl sm:text-5xl font-extrabold tracking-tight">Home SOC Lab</h2>
+          <h2 className="mt-3 font-syne text-4xl sm:text-5xl font-extrabold tracking-tight text-gradient">Home SOC Lab</h2>
           <p className="mt-3 text-lg text-zinc-300 max-w-2xl">{S.tagline}</p>
         </div>
         <div className="grid grid-cols-4 gap-2">
@@ -34,7 +34,7 @@ export function SocLab() {
           {/* architecture */}
           <div className="mt-6 grid grid-cols-2 gap-3">
             {S.architecture.map((a) => (
-              <div key={a.title} className="rounded-xl border border-white/10 bg-zinc-900/40 p-3">
+              <div key={a.title} className="rounded-xl border border-white/10 bg-zinc-900/40 p-3 card-lift">
                 <div className="text-xl mb-1">{a.icon}</div>
                 <div className="font-syne text-sm font-semibold text-white">{a.title}</div>
                 <div className="text-[11px] text-zinc-500 leading-snug mt-0.5">{a.desc}</div>

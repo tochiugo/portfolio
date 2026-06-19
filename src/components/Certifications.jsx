@@ -5,8 +5,8 @@ export function Certifications() {
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
       <div className="mb-10">
-        <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">Verified Credentials</div>
-        <h2 className="font-syne text-4xl font-extrabold tracking-tight">Certifications & Education</h2>
+        <div className="kicker mb-3">Verified Credentials</div>
+        <h2 className="font-syne text-4xl font-extrabold tracking-tight text-gradient">Certifications & Education</h2>
         <p className="mt-2 text-zinc-400 max-w-2xl">CompTIA Security+ and the Google Cybersecurity track — all independently verifiable on Credly.</p>
       </div>
 
@@ -16,7 +16,7 @@ export function Certifications() {
           <div className="grid sm:grid-cols-2 gap-3">
             {C.items.map((c) => (
               <a key={c.name} href={c.url} target="_blank" rel="noopener noreferrer"
-                className="group flex items-center gap-3 rounded-xl border border-white/10 bg-zinc-900/40 p-4 hover:border-[#00E87A]/40 transition-colors">
+                className="group flex items-center gap-3 rounded-xl border border-white/10 bg-zinc-900/40 p-4 card-lift">
                 <span className="text-2xl flex-shrink-0">{c.icon}</span>
                 <div className="min-w-0">
                   <div className="font-syne text-sm font-semibold text-white group-hover:text-[#00E87A] transition-colors leading-tight">{c.name}</div>

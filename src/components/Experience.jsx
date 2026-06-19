@@ -5,8 +5,8 @@ export function Experience() {
   return (
     <div className="max-w-5xl mx-auto px-6 lg:px-12">
       <div className="mb-10">
-        <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">A Decade of Building & Operating</div>
-        <h2 className="font-syne text-4xl font-extrabold tracking-tight">Experience</h2>
+        <div className="kicker mb-3">A Decade of Building & Operating</div>
+        <h2 className="font-syne text-4xl font-extrabold tracking-tight text-gradient">Experience</h2>
         <p className="mt-2 text-zinc-400 max-w-2xl">Two companies founded, a security practice, an engineering practice, and the discipline behind it.</p>
       </div>
 
@@ -19,7 +19,7 @@ export function Experience() {
                 style={{ borderColor: e.current ? '#00E87A' : 'rgba(255,255,255,0.25)' }}>
                 {e.current && <span className="absolute inset-0.5 rounded-full bg-[#00E87A] soc-pulse" />}
               </span>
-              <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5 hover:border-white/20 transition-colors">
+              <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5 card-lift">
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
                   <div>
                     <span className="font-syne text-lg font-bold text-white">{e.role}</span>

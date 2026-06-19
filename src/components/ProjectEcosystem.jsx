@@ -13,7 +13,7 @@ function ProjectCard({ p }) {
   const [open, setOpen] = useState(false);
   const s = STATUS_STYLE[p.status] || STATUS_STYLE.Operational;
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-4 flex flex-col hover:border-white/20 transition-colors">
+    <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-4 flex flex-col card-lift">
       <SwipeGallery images={p.images} captions={p.captions} frame="wide" label={p.name} />
 
       <div className="mt-4 flex items-start justify-between gap-3">
@@ -79,8 +79,8 @@ export function ProjectEcosystem() {
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
         <div>
-          <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">A Living Engineering Ecosystem</div>
-          <h2 className="font-syne text-4xl font-extrabold tracking-tight">Project Ecosystem</h2>
+          <div className="kicker mb-3">A Living Engineering Ecosystem</div>
+          <h2 className="font-syne text-4xl font-extrabold tracking-tight text-gradient">Project Ecosystem</h2>
           <p className="mt-2 text-zinc-400 max-w-2xl">{projects.length} systems. Swipe each gallery — evidence first, text second.</p>
         </div>
         <div className="flex flex-wrap gap-2">

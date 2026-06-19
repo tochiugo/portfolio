@@ -28,8 +28,30 @@ export const personal = {
     "businesses behind it.",
 };
 
+// ── Hero (identity band — the very top of the page) ─────────────────────────
+export const hero = {
+  photo: '/images/tochi_ugochukwu.jpg',
+  greeting: 'Hi, I’m Tochi',
+  headline: ['I build systems that', 'run in production', '— and keep the receipts.'],
+  blurb:
+    "Cybersecurity & automation engineer and founder in Los Angeles. A live AI trading engine " +
+    "streaming real numbers 24/7, a shipped SwiftUI iOS app, a home SOC lab, and a 10-project " +
+    "ecosystem — every claim on this page backed by real runtime logs, databases, and screenshots.",
+  stats: [
+    { value: '24/7', label: 'Live trading system' },
+    { value: '10+', label: 'Shipped projects' },
+    { value: '200+', label: 'SOC events triaged' },
+    { value: 'Security+', label: 'CompTIA certified' },
+  ],
+  ctas: [
+    { label: 'Get in touch', kind: 'primary', href: '#contact' },
+    { label: 'See the live system', kind: 'ghost', href: '#mission-control' },
+  ],
+};
+
 // Top navigation — order matters: proof first, person second.
 export const nav = [
+  { id: 'top', label: 'Home' },
   { id: 'mission-control', label: 'Mission Control' },
   { id: 'witnesspro', label: 'WitnessPro' },
   { id: 'about', label: 'About' },
@@ -533,6 +555,6 @@ export const techStack = {
 };
 
 export default {
-  personal, nav, missionControl, witnessPro, about, socLab, experience,
+  personal, hero, nav, missionControl, witnessPro, about, socLab, experience,
   certifications, projects, evidenceRepo, techStack,
 };

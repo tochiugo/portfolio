@@ -21,11 +21,43 @@ html {
 }
 
 body {
-  background: #000;
+  background: #050505;
   color: #fff;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   max-width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Ambient backdrop ────────────────────────────────────────────────────────
+   A fixed, GPU-cheap atmosphere behind all content: two low-opacity colour
+   wells and a faint dot grid. Lifts the flat black into something with depth
+   without competing with the foreground. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 60rem at 12% -5%, rgba(0, 232, 122, 0.10), transparent 60%),
+    radial-gradient(48rem 48rem at 95% 8%, rgba(56, 189, 248, 0.08), transparent 55%),
+    radial-gradient(60rem 60rem at 50% 120%, rgba(0, 232, 122, 0.06), transparent 60%),
+    #050505;
+}
+.ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 80%);
+}
+/* large-radius blur/gradients are expensive to repaint on small GPUs */
+@media (max-width: 767px) {
+  .ambient { background: #050505; }
+  .ambient::after { background-size: 22px 22px; }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -129,6 +161,100 @@ body {
   color: #fff;
 }
 
+/* ── Gradient accent text (section titles, hero name) ───────────────────────── */
+.text-gradient {
+  background: linear-gradient(120deg, #ffffff 0%, #ffffff 45%, #00E87A 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.text-accent-gradient {
+  background: linear-gradient(120deg, #00E87A 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* kicker — the little mono eyebrow above every section title */
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #00E87A;
+}
+.kicker::before {
+  content: '';
+  width: 1.75rem;
+  height: 1px;
+  background: linear-gradient(90deg, #00E87A, transparent);
+}
+
+/* ── Card hover lift — applied to bordered panels for tactile depth ─────────── */
+.card-lift {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  will-change: transform;
+}
+@media (hover: hover) {
+  .card-lift:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 232, 122, 0.35);
+    box-shadow: 0 12px 40px -16px rgba(0, 232, 122, 0.25);
+  }
+}
+
+/* ── Scroll-reveal — robust: visible by default, animates only when JS opts in ─ */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+.reveal.reveal-armed {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.reveal.reveal-armed.reveal-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Hero portrait — the full, uncropped photo, framed ──────────────────────── */
+.hero-photo-frame {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 3px;
+  background: linear-gradient(150deg, rgba(0, 232, 122, 0.7), rgba(56, 189, 248, 0.4), rgba(0, 232, 122, 0.1));
+  box-shadow: 0 30px 80px -30px rgba(0, 232, 122, 0.4);
+}
+.hero-photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;            /* 420×560 portrait shows fully — no crop */
+  border-radius: calc(1.5rem - 3px);
+  object-fit: cover;
+}
+.hero-photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: calc(1.5rem - 3px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* shimmer line used under hero name */
+@keyframes hero-sheen {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -143,5 +269,12 @@ body {
   .soc-pulse {
     animation: none !important;
     opacity: 1 !important;
+  }
+  .reveal.reveal-armed {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .card-lift:hover {
+    transform: none !important;
   }
 }

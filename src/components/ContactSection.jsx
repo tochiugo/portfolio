@@ -12,9 +12,9 @@ export function ContactSection() {
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
       <div className="text-center max-w-2xl mx-auto">
-        <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">Let's Build</div>
+        <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#00E87A] mb-3">Let's Build</div>
         <h2 className="font-syne text-4xl sm:text-5xl font-extrabold tracking-tight">
-          You've seen the systems. <span className="text-[#00E87A]">Let's talk.</span>
+          <span className="text-gradient">You've seen the systems.</span> <span className="text-accent-gradient">Let's talk.</span>
         </h2>
         <p className="mt-5 text-zinc-400 leading-relaxed">
           Available for software, automation, and applied-AI roles. Fastest path is email — I usually reply within a few hours.

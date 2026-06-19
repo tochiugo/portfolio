@@ -6,20 +6,21 @@ export function AboutEngineer() {
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
       <div className="grid lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2">
-          <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">The Person Behind the Systems</div>
-          <h2 className="font-syne text-4xl font-extrabold tracking-tight">About {personal.name.split(' ')[0]}</h2>
+          <div className="kicker mb-3">The Person Behind the Systems</div>
+          <h2 className="font-syne text-4xl font-extrabold tracking-tight text-gradient">About {personal.name.split(' ')[0]}</h2>
 
           {/* photo + intro */}
           <div className="mt-6 flex flex-col sm:flex-row gap-6 items-start">
-            <img
-              src={about.photo}
-              alt={personal.name}
-              loading="lazy"
-              decoding="async"
-              width="128"
-              height="128"
-              className="w-32 h-32 rounded-2xl object-cover border border-white/10 flex-shrink-0"
-            />
+            <div className="hero-photo-frame w-36 sm:w-40 flex-shrink-0">
+              <img
+                src={about.photo}
+                alt={personal.name}
+                loading="lazy"
+                decoding="async"
+                width="420"
+                height="560"
+              />
+            </div>
             <div className="space-y-4 text-zinc-300 leading-relaxed text-[15px]">
               {about.paragraphs.map((p, i) => (
                 <p key={i} dangerouslySetInnerHTML={{ __html: i === 0 ? p.replace(personal.name, `<strong class="text-white">${personal.name}</strong>`) : p }} />
@@ -30,7 +31,7 @@ export function AboutEngineer() {
           {/* highlights */}
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
             {about.highlights.map((h) => (
-              <div key={h.label} className="rounded-xl border border-white/10 bg-zinc-900/40 p-3 text-center">
+              <div key={h.label} className="rounded-xl border border-white/10 bg-zinc-900/40 p-3 text-center card-lift">
                 <div className="font-syne text-xl font-bold text-[#00E87A]">{h.value}</div>
                 <div className="font-mono text-[9px] uppercase tracking-wider text-zinc-500 mt-1 leading-tight">{h.label}</div>
               </div>

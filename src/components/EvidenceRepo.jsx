@@ -7,8 +7,8 @@ export function EvidenceRepo() {
       <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/60 to-black p-8 lg:p-12">
         <div className="grid lg:grid-cols-2 gap-10">
           <div>
-            <div className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-500 mb-3">Chain of Custody</div>
-            <h2 className="font-syne text-4xl font-extrabold tracking-tight">Evidence Repository</h2>
+            <div className="kicker mb-3">Chain of Custody</div>
+            <h2 className="font-syne text-4xl font-extrabold tracking-tight text-gradient">Evidence Repository</h2>
             <p className="mt-5 text-zinc-300 leading-relaxed text-[15px]">{E.summary}</p>
 
             <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3">

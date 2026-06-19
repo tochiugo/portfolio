@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { personal, nav } from './data/portfolio';
 import { Nav } from './components/Nav';
+import { Hero } from './components/Hero';
+import { Reveal } from './components/Reveal';
 import { MissionControl } from './components/MissionControl';
 import { WitnessProSection } from './components/WitnessProSection';
 import { AboutEngineer } from './components/AboutEngineer';
@@ -46,7 +48,7 @@ function CustomCursor() {
 const SECTION_IDS = nav.map((n) => n.id);
 
 export default function App() {
-  const [activeSection, setActiveSection] = useState('mission-control');
+  const [activeSection, setActiveSection] = useState('top');
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
@@ -74,7 +76,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans">
+    <div className="min-h-screen text-white font-sans">
+      <div className="ambient" aria-hidden="true" />
       <CustomCursor />
 
       {/* scroll progress */}
@@ -83,39 +86,39 @@ export default function App() {
 
       <Nav activeSection={activeSection} scrollToSection={scrollToSection} />
 
-      {/* MISSION CONTROL — homepage centerpiece */}
-      <section id="mission-control" className="relative pt-28 pb-24 border-b border-white/10 overflow-hidden">
-        {/* decorative glow — skipped on mobile where large-radius blur is GPU-expensive */}
-        <div className="hidden md:block absolute inset-0 opacity-[0.07] pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-[32rem] h-[32rem] rounded-full bg-[#00E87A] blur-[90px]" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-cyan-500 blur-[90px]" />
-        </div>
-        <div className="relative"><ErrorBoundary name="mission-control"><MissionControl /></ErrorBoundary></div>
+      {/* HERO — identity band, the very top */}
+      <section id="top" className="relative pt-32 pb-20 lg:pt-36 lg:pb-24 border-b border-white/10 overflow-hidden">
+        <Hero />
+      </section>
+
+      {/* MISSION CONTROL — live proof centerpiece */}
+      <section id="mission-control" className="relative py-24 border-b border-white/10 overflow-hidden">
+        <div className="relative"><ErrorBoundary name="mission-control"><Reveal><MissionControl /></Reveal></ErrorBoundary></div>
       </section>
 
       {/* WITNESSPRO */}
-      <section id="witnesspro" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="witnesspro"><WitnessProSection /></ErrorBoundary></section>
+      <section id="witnesspro" className="py-24 border-b border-white/10"><ErrorBoundary name="witnesspro"><Reveal><WitnessProSection /></Reveal></ErrorBoundary></section>
 
       {/* ABOUT */}
-      <section id="about" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="about"><AboutEngineer /></ErrorBoundary></section>
+      <section id="about" className="py-24 border-b border-white/10"><ErrorBoundary name="about"><Reveal><AboutEngineer /></Reveal></ErrorBoundary></section>
 
-      {/* SOC LAB — replaces the former Nexus slot */}
-      <section id="soc-lab" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="soc-lab"><SocLab /></ErrorBoundary></section>
+      {/* SOC LAB */}
+      <section id="soc-lab" className="py-24 border-b border-white/10"><ErrorBoundary name="soc-lab"><Reveal><SocLab /></Reveal></ErrorBoundary></section>
 
       {/* PROJECTS */}
-      <section id="projects" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="projects"><ProjectEcosystem /></ErrorBoundary></section>
+      <section id="projects" className="py-24 border-b border-white/10"><ErrorBoundary name="projects"><Reveal><ProjectEcosystem /></Reveal></ErrorBoundary></section>
 
       {/* EXPERIENCE */}
-      <section id="experience" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="experience"><Experience /></ErrorBoundary></section>
+      <section id="experience" className="py-24 border-b border-white/10"><ErrorBoundary name="experience"><Reveal><Experience /></Reveal></ErrorBoundary></section>
 
       {/* CERTIFICATIONS */}
-      <section id="certs" className="py-24 bg-black border-b border-white/10"><ErrorBoundary name="certs"><Certifications /></ErrorBoundary></section>
+      <section id="certs" className="py-24 border-b border-white/10"><ErrorBoundary name="certs"><Reveal><Certifications /></Reveal></ErrorBoundary></section>
 
       {/* EVIDENCE */}
-      <section id="evidence" className="py-24 bg-zinc-950 border-b border-white/10"><ErrorBoundary name="evidence"><EvidenceRepo /></ErrorBoundary></section>
+      <section id="evidence" className="py-24 border-b border-white/10"><ErrorBoundary name="evidence"><Reveal><EvidenceRepo /></Reveal></ErrorBoundary></section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 bg-black"><ErrorBoundary name="contact"><ContactSection /></ErrorBoundary></section>
+      <section id="contact" className="py-24"><ErrorBoundary name="contact"><Reveal><ContactSection /></Reveal></ErrorBoundary></section>
 
       {/* footer */}
       <footer className="border-t border-white/10 py-8 bg-black">
