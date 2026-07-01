@@ -6,8 +6,8 @@ const AMBER = '#f5b301';
 const RED = '#ff4d4d';
 const CYAN = '#38bdf8';
 
-// Reads the REAL polymarket-bot status (bot.log + trades.db) via /api/status,
-// which a local bridge pushes to a gist every ~20s. No mock data.
+// Reads the REAL arbiter status (arbiter.log + arbiter.db) via /api/status,
+// which a local bridge pushes to a gist every ~60s. No mock data.
 function useLiveStatus() {
   const [data, setData] = useState(null);
   const lastGood = useRef(null);
@@ -24,21 +24,12 @@ function useLiveStatus() {
 
 // tiny self-ticking leaves — only THESE re-render each second, not the whole dashboard
 function useSecond() { const [, set] = useState(0); useEffect(() => { const id = setInterval(() => set((n) => n + 1), 1000); return () => clearInterval(id); }, []); }
-function LiveUptime({ since }) { useSecond(); return <>{since ? fmtDuration(Date.now() - Date.parse(since)) : '—'}</>; }
 function LiveHeartbeat({ iso, online }) {
   useSecond();
   const sec = iso ? Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 1000)) : null;
   return <span style={{ color: online ? ACCENT : RED }}>{sec == null ? '—' : `${sec}s ago`}</span>;
 }
 
-function fmtDuration(ms) {
-  if (ms == null || ms < 0) return '—';
-  const s = Math.floor(ms / 1000);
-  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
-  if (d > 0) return `${d}d ${h}h ${m}m`;
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m ${sec}s`;
-}
 const nf = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
 const money = (n) => (n == null ? '—' : `${n < 0 ? '-' : ''}$${Math.abs(Number(n)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
 const pnlColor = (n) => (n == null ? '#e4e4e7' : n > 0 ? ACCENT : n < 0 ? RED : '#e4e4e7');
@@ -64,17 +55,12 @@ function Row({ label, value, color }) {
 export function MissionControl() {
   const { data } = useLiveStatus();
   const m = data?.metrics || {};
-  const lt = data?.lifetime || {};
-  const gov = data?.governor || {};
-  const sleeves = Object.entries(data?.sleeves || {}).filter(([k]) => k !== 'UNKNOWN');
-  const paperForced = gov.mode_override === 'paper_forced';
+  const categories = data?.categories || [];
   const hbAgeAtRender = data?.last_heartbeat ? Math.floor((Date.now() - Date.parse(data.last_heartbeat)) / 1000) : null;
   const connecting = !data;
   const online = data ? (data.status === 'online' && (hbAgeAtRender == null || hbAgeAtRender < MC.offlineThresholdSec)) : false;
-  const isLive = data?.mode === 'LIVE';
   const statusLabel = connecting ? 'CONNECTING' : online ? 'ONLINE' : 'OFFLINE';
   const statusColor = connecting ? AMBER : online ? ACCENT : RED;
-  const sleeveStyle = (x) => (x >= 2 ? { c: ACCENT, label: 'proven' } : x === 0 ? { c: RED, label: 'paused' } : x < 1 ? { c: AMBER, label: 'starved' } : { c: '#a1a1aa', label: 'neutral' });
 
   return (
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -85,15 +71,15 @@ export function MissionControl() {
             <span className="w-1.5 h-1.5 rounded-full soc-pulse" style={{ background: online ? ACCENT : RED }} /> Live Operational System · reads the bot's real log + trade DB
           </div>
           <h1 className="mt-3 font-syne text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Polymarket <span style={{ color: ACCENT }}>Mission Control</span>
+            Arbiter <span style={{ color: ACCENT }}>Mission Control</span>
           </h1>
           <p className="mt-2 font-mono text-sm text-zinc-400">
-            {data?.codename || MC.codename} · run #{data?.run_id ?? '—'} of {data?.runs_total ?? '—'} · {data?.health?.signals_active ?? 14} signals active
+            {data?.codename || MC.codename} · cross-venue divergence · Polymarket ↔ Kalshi
           </p>
         </div>
-        <span className={`inline-flex items-center gap-2 self-start whitespace-nowrap rounded-full border px-3 py-1.5 font-mono text-xs ${isLive ? 'border-red-500/50 text-red-300' : 'border-amber-400/40 text-amber-300'}`}>
-          <span className="w-1.5 h-1.5 rounded-full soc-pulse flex-shrink-0" style={{ background: isLive ? RED : AMBER }} />
-          {isLive ? 'LIVE TRADING · real money' : paperForced ? 'PAPER · governor self-demoted' : 'PAPER / shadow'}
+        <span className="inline-flex items-center gap-2 self-start whitespace-nowrap rounded-full border px-3 py-1.5 font-mono text-xs border-red-500/50 text-red-300">
+          <span className="w-1.5 h-1.5 rounded-full soc-pulse flex-shrink-0" style={{ background: RED }} />
+          LIVE TRADING · real money
         </span>
       </div>
 
@@ -102,7 +88,7 @@ export function MissionControl() {
         <div className={`lg:col-span-1 rounded-2xl border p-6 ${online ? 'border-[#00E87A]/30 bg-[#00E87A]/[0.04]' : connecting ? 'border-white/15 bg-zinc-900/40' : 'border-red-500/40 bg-red-500/[0.05]'}`}>
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">System Status</span>
-            <span className="font-mono text-[10px] text-zinc-500">v{data?.version || '15.4.0'}</span>
+            <span className="font-mono text-[10px] text-zinc-500">v{data?.version || '1.0'}</span>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <span className="relative flex h-3.5 w-3.5">
@@ -112,13 +98,10 @@ export function MissionControl() {
             <span className="font-syne text-3xl font-extrabold" style={{ color: statusColor }}>{statusLabel}</span>
           </div>
           <div className="mt-5 space-y-3">
-            <Row label="Mode" value={data?.mode || '—'} color={isLive ? RED : AMBER} />
-            <Row label="Uptime · this run" value={<LiveUptime since={data?.run_started_at} />} />
+            <Row label="Mode" value="LIVE" color={RED} />
             <Row label="Last heartbeat" value={<LiveHeartbeat iso={data?.last_heartbeat} online={online} />} />
             <Row label="Health" value={data?.health?.state || '—'} color={online ? ACCENT : RED} />
-            <Row label="Governor" value={paperForced ? 'paper-forced' : gov.mode_override && gov.mode_override !== 'none' ? gov.mode_override : 'clear'} color={paperForced ? AMBER : ACCENT} />
-            <Row label="Kill-switch" value={data?.signals?.killed ? 'TRIPPED' : 'clear'} color={data?.signals?.killed ? RED : ACCENT} />
-            <Row label="Latest scan" value={data?.last_scan ? `#${nf(data.last_scan.id)} · ${data.last_scan.kind}` : `#${nf(m.latest_scan_id)}`} />
+            <Row label="Deployed capital" value={money(m.deployed_usd)} color={AMBER} />
           </div>
           {!online && (
             <p className="mt-4 text-xs text-zinc-500 leading-relaxed">
@@ -127,88 +110,33 @@ export function MissionControl() {
           )}
         </div>
 
-        {/* trading metrics — scoped to the V15 system (not the retired pre-V15 bots) */}
+        {/* trading metrics */}
         <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Metric label="PnL · V15 era" value={money(m.total_pnl)} color={pnlColor(m.total_pnl)} sub={`${nf(m.trades_total)} V15 trades`} />
-          <Metric label="PnL Today" value={money(m.daily_pnl)} color={pnlColor(m.daily_pnl)} sub={`${nf(m.daily_trades)} trades today`} />
-          <Metric label="Win Rate · V15" value={m.win_rate != null ? `${m.win_rate}%` : '—'} color={CYAN} sub={`${nf(m.wins)}W · ${nf(m.losses)}L`} />
-          <Metric label="Open Positions" value={nf(m.open_positions)} color={m.open_positions > 0 ? AMBER : '#fff'} sub={isLive ? 'live book' : 'paper book'} />
-          <Metric label="Live PnL · V15" value={money(m.live_pnl)} color={pnlColor(m.live_pnl)} sub={`${nf(m.live_trades)} real-money`} />
-          <Metric label="Bankroll" value={money(m.bankroll_usd)} sub={`exposure ${money(m.exposure_usd)}`} />
-          <Metric label="Brier · V15" value={m.brier ?? '—'} color={CYAN} sub={m.brier_skill != null ? `mkt ${m.brier_market} · skill ${m.brier_skill > 0 ? '+' : ''}${m.brier_skill}` : `last ${m.brier_n ?? 50} trades`} />
-          <Metric label="Shadow PnL · V15" value={money(m.paper_pnl)} color={pnlColor(m.paper_pnl)} sub={`${nf(m.paper_trades)} recorded`} />
+          <Metric label="Net PnL" value={money(m.total_pnl)} color={pnlColor(m.total_pnl)} sub={`${nf(m.resolved_total)} resolved trades`} />
+          <Metric label="Win Rate" value={m.win_rate != null ? `${m.win_rate}%` : '—'} color={CYAN} sub={`${nf(m.wins)}W · ${nf(m.losses)}L`} />
+          <Metric label="Open Positions" value={nf(m.open_positions)} color={m.open_positions > 0 ? AMBER : '#fff'} sub="live book" />
+          <Metric label="Total Trades" value={nf(m.total_trades)} sub="all-time" />
         </div>
       </div>
 
       <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-zinc-600">
-        Primary metrics cover the V15 system only (run ≥ {data?.v15_first_run ?? 85}, since Jun 10 2026). All-time scale across every version below.
+        Small by design — $25 R&D bankroll. This is proof of the edge, not income yet.
       </p>
 
-      {/* all-time scale metrics — every version, every run, since v1 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-        <Metric label="Markets Scanned" value={nf(lt.markets_scanned ?? m.markets_scanned)} color={ACCENT} sub="all-time · since v1" />
-        <Metric label="Evaluations" value={nf(lt.evaluations ?? m.evaluations)} color={ACCENT} sub="all-time · since v1" />
-        <Metric label="Scans Completed" value={nf(lt.scans_completed ?? m.scans_completed)} sub={`scan #${nf(m.latest_scan_id)}`} />
-        <Metric label="Recorded Trades" value={nf(lt.trades_total)} sub={`across ${nf(lt.runs_total ?? data?.runs_total)} runs · all versions`} />
-      </div>
-
-      {/* capital allocator — the V15 sleeve multipliers, read live from system_config */}
-      {sleeves.length > 0 && (
+      {/* category breakdown */}
+      {categories.length > 0 && (
         <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5 mt-5">
-          <h3 className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">Capital Allocator · per-sleeve multipliers (Bayesian, live)</h3>
+          <h3 className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">PnL by Divergence Category</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {sleeves.map(([name, x]) => {
-              const s = sleeveStyle(Number(x));
-              return (
-                <div key={name} className="flex items-center justify-between gap-2 rounded-lg bg-black/30 border border-white/5 px-3 py-2">
-                  <span className="font-mono text-xs text-zinc-200">{name}</span>
-                  <span className="font-mono text-[11px] tabular-nums" style={{ color: s.c }}>{Number(x)}× · {s.label}</span>
-                </div>
-              );
-            })}
-          </div>
-          <p className="mt-2.5 font-mono text-[10px] text-zinc-600">
-            Sleeves earn capital with out-of-sample proof: 2× proven · 1× neutral · 0.25× starved · 0× paused.
-          </p>
-        </div>
-      )}
-
-      {/* signals + markets */}
-      <div className="grid md:grid-cols-2 gap-5 mt-5">
-        <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5">
-          <h3 className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">Signal Policy · {data?.health?.signals_active ?? 14} active</h3>
-          <div className="space-y-2.5">
-            <div>
-              <div className="font-mono text-[10px] text-[#00E87A] mb-1.5">DRIVERS — can place live orders</div>
-              <div className="flex flex-wrap gap-1.5">
-                {(data?.signals?.drivers || []).map((s) => (
-                  <span key={s} className="font-mono text-[11px] px-2 py-0.5 rounded-md border border-[#00E87A]/40 text-[#00E87A] bg-[#00E87A]/[0.06]">{s}</span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div className="font-mono text-[10px] text-zinc-500 mb-1.5 mt-2">SHADOW — recorded at 0-weight, validating</div>
-              <div className="flex flex-wrap gap-1.5">
-                {(data?.signals?.shadow || []).map((s) => (
-                  <span key={s} className="font-mono text-[11px] px-2 py-0.5 rounded-md border border-white/10 text-zinc-400">{s}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-zinc-900/30 p-5">
-          <h3 className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 mb-3">Markets Under Watch · {data?.last_scan?.kind || 'crypto'} scan</h3>
-          <div className="grid grid-cols-2 gap-2">
-            {(data?.markets || []).map((mk) => (
-              <div key={mk.asset} className="flex items-center justify-between gap-2 rounded-lg bg-black/30 border border-white/5 px-3 py-2">
-                <span className="font-mono text-xs text-zinc-200">{mk.asset} Up/Down</span>
-                <span className="font-mono text-[10px] text-zinc-500">{mk.markets} mkts</span>
+            {categories.map((c) => (
+              <div key={c.category} className="flex items-center justify-between gap-2 rounded-lg bg-black/30 border border-white/5 px-3 py-2">
+                <span className="font-mono text-xs text-zinc-200 capitalize">{c.category}</span>
+                <span className="font-mono text-[11px] tabular-nums" style={{ color: pnlColor(c.pnl) }}>{money(c.pnl)} · {c.trades}x</span>
               </div>
             ))}
-            {(!data?.markets || data.markets.length === 0) && <span className="font-mono text-xs text-zinc-600">loading…</span>}
           </div>
         </div>
-      </div>
+      )}
 
       {/* recent trades + live log */}
       <div className="grid md:grid-cols-2 gap-5 mt-5">
@@ -218,12 +146,10 @@ export function MissionControl() {
             {(data?.recent_trades || []).map((t, i) => (
               <div key={i} className="flex items-center justify-between gap-2 rounded-lg bg-black/30 border border-white/5 px-3 py-2 font-mono text-xs">
                 <span className="flex items-center gap-2 min-w-0">
-                  <span className="font-bold" style={{ color: t.side === 'YES' ? ACCENT : RED }}>{t.side === 'YES' ? '▲ YES' : '▼ NO'}</span>
-                  <span className="text-zinc-300">{money(t.size)}</span>
-                  <span className="text-zinc-600">@ {t.price}</span>
-                  {t.mode === 'live' && <span className="text-[9px] px-1 rounded bg-red-500/15 text-red-300 border border-red-500/30">LIVE</span>}
+                  <span className="font-bold capitalize flex-shrink-0" style={{ color: CYAN }}>{t.category}</span>
+                  <span className="text-zinc-500 truncate">{t.label}</span>
                 </span>
-                <span style={{ color: t.open ? AMBER : pnlColor(t.pnl) }}>{t.open ? 'open' : money(t.pnl)}</span>
+                <span className="flex-shrink-0" style={{ color: t.open ? AMBER : pnlColor(t.pnl) }}>{t.open ? `${money(t.cost)} open` : money(t.pnl)}</span>
               </div>
             ))}
             {(!data?.recent_trades || data.recent_trades.length === 0) && <span className="font-mono text-xs text-zinc-600">loading…</span>}
@@ -234,7 +160,7 @@ export function MissionControl() {
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#00E87A]/70" />
-            <span className="ml-2 font-mono text-[10px] text-zinc-500">bot.log — live tail</span>
+            <span className="ml-2 font-mono text-[10px] text-zinc-500">arbiter.log — live tail</span>
             <span className="ml-auto font-mono text-[9px] text-zinc-600">{data?.health?.log_age_sec != null ? `${data.health.log_age_sec}s ago` : ''}</span>
           </div>
           <div className="space-y-1 font-mono text-[10.5px] leading-relaxed">

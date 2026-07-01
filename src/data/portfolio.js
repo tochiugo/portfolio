@@ -21,8 +21,8 @@ export const personal = {
     'Automation Engineer', 'Applied AI Engineer', 'Software Engineer',
   ],
   pitch:
-    "I build and operate systems that run in production. A live AI trading engine (V15.4) with " +
-    "sleeve-based capital allocation, real risk controls, and calibration; a SwiftUI iOS evidence app; " +
+    "I build and operate systems that run in production. A live cross-venue trading engine (Arbiter) " +
+    "with real risk controls and an honest, published ledger; a SwiftUI iOS evidence app; " +
     "browser-automation pipelines; AI-driven tooling; and a home SOC lab where I triage and document " +
     "real investigations. CompTIA Security+ certified, with 10+ years of building and running " +
     "businesses behind it.",
@@ -34,7 +34,7 @@ export const hero = {
   greeting: 'Hi, I’m Tochi',
   headline: ['I build systems that', 'run in production', '— and keep the receipts.'],
   blurb:
-    "Cybersecurity & automation engineer and founder in Los Angeles. A live AI trading engine " +
+    "Cybersecurity & automation engineer and founder in Los Angeles. A live cross-venue trading engine " +
     "streaming real numbers 24/7, a shipped SwiftUI iOS app, a home SOC lab, and a 10-project " +
     "ecosystem — every claim on this page backed by real runtime logs, databases, and screenshots.",
   stats: [
@@ -55,6 +55,8 @@ export const nav = [
   { id: 'mission-control', label: 'Mission Control' },
   { id: 'witnesspro', label: 'WitnessPro' },
   { id: 'soc-lab', label: 'SOC Lab' },
+  { id: 'soc-console', label: 'SOC Console' },
+  { id: 'nexus', label: 'Nexus' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'certs', label: 'Certs' },
@@ -64,38 +66,37 @@ export const nav = [
 
 // ── Mission Control (homepage centerpiece) ──────────────────────────────────
 export const missionControl = {
-  system: 'Polymarket Mission Control',
-  codename: 'V15.4',
+  system: 'Arbiter — Cross-Venue Divergence Engine',
+  codename: 'Arbiter',
   statusUrl: import.meta.env.VITE_STATUS_URL || '/api/status',
-  // heartbeat (bot.log mtime) older than this (seconds) => OFFLINE
-  offlineThresholdSec: 300,
+  // heartbeat (arbiter.log mtime) older than this (seconds) => OFFLINE
+  offlineThresholdSec: 600,
   pollIntervalMs: 15000,
   summary:
-    "This is the real thing — a live, 24/7 AI trading system running against Polymarket and Kalshi " +
-    "prediction markets, now on its V15 architecture: a fund, not a bot. The dashboard reads straight " +
-    "from the system's own runtime log and SQLite ledger — real scans, real trades, real PnL including " +
-    "the losses. Primary metrics cover the V15 system itself; the all-time strip (8M+ markets scanned, " +
-    "15,000+ recorded trades, 89 production runs) spans every version since v1. No mock data, no " +
-    "cherry-picking.",
+    "This is the real thing — a live trading bot running against Polymarket and Kalshi, reading straight " +
+    "from its own runtime log and SQLite ledger. Arbiter does one job: it fades Polymarket prices toward " +
+    "Kalshi's fair value wherever Kalshi is the sharper book, holds to settlement, and books the P&L — " +
+    "wins and losses both. No prediction model, no forecasting. The prior engine (V13) tried pure " +
+    "prediction and lost $1,133 over 16,000 trades; the only thing that graded positive was cross-venue " +
+    "divergence itself, especially weather. That's the entire reason Arbiter exists.",
   strategyNote:
-    "V15 runs as a portfolio of independent strategy sleeves — Kalshi cross-price, sports divergence, " +
-    "weather, and a $1 'probe' book for unproven edges — each with its own P&L and drawdown budget under " +
-    "a Bayesian capital allocator that scales proven sleeves up (2×) and starves or pauses underperformers. " +
-    "Above them sits a pre-trade risk authority (edge and price bands, trend guard, cluster caps, a " +
-    "net-drawdown kill-switch) and an autonomous governor that audits the machine every 50 resolved trades " +
-    "and demotes it to paper when calibration slips. An XGBoost brain retrains on resolved trades but may " +
-    "veto entries only while its validation AUC holds above 0.55 — influence here is default-deny: nothing " +
-    "trades real capital without out-of-sample proof. The driver/shadow panel above is the live policy, " +
-    "read from the running system.",
-  stack: ['Python', 'asyncio', 'XGBoost', 'SQLite', 'Polymarket CLOB/Gamma', 'Kalshi', 'Coinbase/Binance feeds', 'Bayesian allocation', 'Kelly sizing', 'Brier calibration', 'TCA', 'pm2'],
+    "This is deliberately small — an $25 R&D bankroll, not an income strategy. Polymarket's $1-minimum-" +
+    "per-order is the binding constraint at this size, so capital velocity is low: a weather position " +
+    "locks money for roughly 21 hours until it resolves. On 2026-06-18 a basket executor was armed live " +
+    "before its $1-per-leg economics were validated — it repeatedly bought one leg of an unfillable " +
+    "basket and unwound it a cent worse, a real ~$11 loss over about 4 hours before the abort/unwind logic " +
+    "caught it. It's now back to paper and won't re-arm live without a clean paper run and more capital. " +
+    "The plan is explicit: prove the edge is real over 40–50 resolved trades before ever adding capital — " +
+    "not the other way around.",
+  stack: ['Python', 'asyncio', 'SQLite', 'Polymarket CLOB API', 'Kalshi API', 'launchd', 'pm2'],
   // Engineering evolution — real capabilities, layered over many runs.
   timeline: [
-    { v: 'Prov', title: 'Provenance Core', body: 'Every decision, input, weight, and outcome recorded in SQLite — any trade replayable end-to-end. (v12)' },
-    { v: 'Gov', title: 'Autonomous Governor', body: 'Self-tuning policy checks that raise edge floors, blacklist losing assets, and self-demote to paper — every action logged with reasoning. (V14)' },
-    { v: 'Brain', title: 'ML Brain + Quality Gate', body: 'XGBoost model auto-retrains on resolved trades; it earns veto power only at validation AUC ≥ 0.55. Unskilled models observe — they don\'t rule. (V14–15)' },
-    { v: 'Fund', title: 'Sleeves + Allocator', body: 'Independent P&L books per edge source under a Bayesian capital allocator: 2× proven, 1× neutral, 0.25× starved, 0× drawdown-paused. (V15)' },
-    { v: 'Desks', title: 'Cross-Venue Desks', body: 'Dutch-book arbitrage scanner and a Kalshi↔Polymarket sports divergence desk, guarded by a feed-freshness sentinel. (V15.2–15.3)' },
-    { v: 'V15.4', title: 'Maker Entry + Readiness Gate', body: 'Passive maker entries recover a measured −1.9% taker spread cost; a 7-gate objective scorecard decides when the machine may trade real money.' },
+    { v: 'v12', title: 'Provenance Core', body: 'Every decision, input, and outcome recorded in SQLite — any trade replayable end-to-end.' },
+    { v: 'v13', title: 'Prediction Attempt', body: 'A pure ML prediction engine traded 16,000+ trades and lost $1,133. Only divergence-based trades graded positive — the seed of Arbiter\'s core rule.' },
+    { v: 'Rule', title: '"Never Predict"', body: 'Arbiter is built on the opposite premise of v13: no forecasting, no outcome model — pure book disagreement between Polymarket and Kalshi.' },
+    { v: 'Live', title: 'Engine Goes Live', body: 'The engine job starts placing real divergence trades, sized to clear Polymarket\'s $1-per-order minimum.' },
+    { v: '6/18', title: 'Basket Incident', body: 'A basket executor armed live before $1-per-leg economics were validated caused a real ~$11 loss in 4 hours. Abort/unwind logic held — no stuck positions. Reverted to paper.' },
+    { v: 'Now', title: 'Proving the Edge', body: 'Running weather + sports divergence feeds live at small size, tracking toward a 40–50 trade sample before any capital decision.' },
   ],
 };
 
@@ -294,6 +295,26 @@ export const certifications = {
   },
 };
 
+// ── Nexus Ecosystem (confidential digital-human platform — public-safe teaser only) ──
+export const nexus = {
+  slug: 'nexus',
+  name: 'Nexus Ecosystem',
+  tagline: 'A digital-human platform. Most of it stays behind the curtain.',
+  status: 'Confidential · public-safe surface only',
+  summary:
+    "Nexus is an in-progress digital-human ecosystem — body capture, twin creation, and an agentic " +
+    "interface layer. The architecture and specifications are confidential. What's shown here is the " +
+    "public-safe prototype surface only: enough to convey the product direction, nothing sensitive.",
+  publicConcepts: ['Digital Human', 'Body Capture', 'Twin Creation', 'Public UI Concepts'],
+  images: ['/evidence/nexus/01.png', '/evidence/nexus/02.png', '/evidence/nexus/03.png'],
+  captions: [
+    'Public prototype — the Nexus "Create your Digital Human" concept shell.',
+    'Concept navigation — the digital-human capture and twin-creation surface.',
+    'Onboarding concept — ownership and privacy framing for a personal digital twin.',
+  ],
+  withheld: ['Confidential architecture', 'Internal specifications', 'Capture pipeline', 'Strategy & roadmap'],
+};
+
 // ── Project ecosystem (curated galleries) ───────────────────────────────────
 // status: Operational | Shipped | Prototype | Research
 export const projects = [
@@ -301,13 +322,14 @@ export const projects = [
     slug: 'polymarket',
     name: 'Polymarket Engine — V15.4',
     category: 'Trading System',
-    status: 'Operational',
+    status: 'Shipped',
     published: false,
-    tagline: 'The live AI engine behind Mission Control — a fund, not a bot.',
+    tagline: 'The prior AI trading engine — retired; its −$1,133 lesson is why Arbiter (Mission Control, live now) exists.',
     stack: ['Python', 'asyncio', 'XGBoost', 'SQLite', 'Kalshi', 'Polymarket CLOB/Gamma', 'pm2'],
     summary:
-      "The system Mission Control monitors live, evolved over 89 production runs and 15 major versions. " +
-      "V15 restructured it from a single-brain bot into an institutional design: independent strategy " +
+      "89 production runs and 15 major versions of a pure-prediction trading fund, now retired in favor of " +
+      "Arbiter's divergence-only approach (see Mission Control). V15 restructured it from a single-brain bot " +
+      "into an institutional design: independent strategy " +
       "sleeves with per-sleeve P&L and drawdown budgets, a Bayesian capital allocator, a pre-trade risk " +
       "veto chain, and an autonomous governor that tunes policy and self-demotes to paper when calibration " +
       "slips. V15.4 added passive maker-entry execution — recovering a measured −1.9% taker spread cost — " +

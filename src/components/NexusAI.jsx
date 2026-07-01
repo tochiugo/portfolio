@@ -54,7 +54,7 @@ function classifyIntent(text) {
   if (has('thank', 'awesome', 'great', 'perfect', 'nice')) return { intent: 'thanks' };
   if (has('bye', 'goodbye', 'see you', 'later', 'take care')) return { intent: 'goodbye' };
   if (has('mission control', 'dashboard', 'live system', 'status', 'online', 'offline', 'heartbeat', 'uptime', 'dry run', 'dry-run')) return { intent: 'mission_control' };
-  if (has('trading', 'bot', 'trade', 'strategy', 'strategies', 'risk', 'kelly', 'signal')) return { intent: 'trading' };
+  if (has('trading', 'bot', 'trade', 'strategy', 'strategies', 'risk', 'kelly', 'signal', 'arbiter', 'divergence')) return { intent: 'trading' };
   if (has('witness', 'ios', 'iphone', 'swift', 'camera', 'mobile app', 'avfoundation', 'evidence vault')) return { intent: 'witnesspro' };
   if (has('soc', 'splunk', 'chronicle', 'siem', 'mitre', 'wireshark', 'kali', 'nmap', 'threat', 'incident', 'security analyst', 'detection', 'triage', 'home lab', 'homelab')) return { intent: 'soc' };
   if (has('business', 'founder', 'ceo', 'company', 'llc', 'entrepreneur', 'meridian', 'tochiugo global', 'export', 'experience', 'work history', 'correctional')) return { intent: 'experience' };
@@ -90,14 +90,14 @@ function generateResponse({ intent, slug }) {
 
     case 'mission_control':
       return R(
-        `**Mission Control** is the homepage centerpiece — and it's **the real, live bot**, not a demo. A bridge reads the running bot's own \`bot.log\` and SQLite trade ledger and pushes a sanitized snapshot every ~20s; the dashboard renders it through a \`/api/status\` proxy.\n\nIt shows real numbers: live/total PnL, daily PnL, total trades, win rate, open positions, bankroll, Brier calibration, cumulative markets scanned and evaluations, the real signal policy, recent trades, and a live tail of the bot log. If the bot's log goes quiet, it flips to OFFLINE automatically.\n\n${missionControl.strategyNote}\n\nWhat's hidden: wallet keys, addresses, and API secrets never leave the machine — only public-safe metrics are published.`,
-        ['How is the bot architected?', 'What signals does it run?', 'Tell me about the V15.4 engine', 'Is this real?']
+        `**Mission Control** is the homepage centerpiece — and it's **the real, live bot**, not a demo. A bridge reads Arbiter's own \`arbiter.log\` and SQLite trade ledger and pushes a sanitized snapshot every ~60s; the dashboard renders it through a \`/api/status\` proxy.\n\nIt shows real numbers: net PnL, win rate, open positions, deployed capital, PnL by divergence category (weather/sports), recent trades, and a live tail of the bot log. If the bot's log goes quiet for 10+ minutes, it flips to OFFLINE automatically.\n\n${missionControl.summary}\n\nWhat's hidden: wallet keys, addresses, and API secrets never leave the machine — only public-safe metrics are published.`,
+        ['How is Arbiter architected?', 'What is the strategy?', 'What happened with V15.4?', 'Is this real?']
       );
 
     case 'trading':
       return R(
-        `Tochi runs several trading/automation systems. The flagship is the **Polymarket Engine V15.4** behind Mission Control:\n\n${missionControl.strategyNote}\n\nEvery order is Kelly-sized and must pass the full veto chain before execution; live trading is additionally gated by a 7-gate objective readiness scorecard (governor clearance, calibration skill, a proven sleeve, live feeds, hardened execution, and more). Until every gate is green, real-money size stays capped at probe level.\n\nBeyond Polymarket: **Nexus Bot** (Kalshi + news + crypto + AI scoring), **15 Minutes** (time-windowed Kalshi), **SHARP** (high-frequency scalper), plus betting automation (**Bet Bot / Aviator**, **SportyBot**).`,
-        ['Tell me about the V15.4 engine', 'What is Nexus Bot?', 'How is risk handled?', 'List all projects']
+        `Tochi runs several trading/automation systems. The flagship is **Arbiter** behind Mission Control — a cross-venue divergence engine, not a prediction bot:\n\n${missionControl.summary}\n\n${missionControl.strategyNote}\n\nBeyond Arbiter: the retired **Polymarket Engine V15.4** (a pure-prediction fund whose losses are the reason Arbiter exists), **Nexus Bot** (Kalshi + news + crypto + AI scoring), **15 Minutes** (time-windowed Kalshi), **SHARP** (high-frequency scalper), plus betting automation (**Bet Bot / Aviator**, **SportyBot**).`,
+        ['Tell me about Arbiter', 'What happened with V15.4?', 'How is risk handled?', 'List all projects']
       );
 
     case 'witnesspro':
@@ -126,8 +126,8 @@ function generateResponse({ intent, slug }) {
 
     case 'architecture':
       return R(
-        `A few representative engineering decisions:\n\n**Polymarket Engine V15.4** — structured like a fund, not a bot. Five layers: an autonomous governor (self-tuning policy with an audit trail), a Bayesian capital allocator (per-sleeve multipliers: 2× proven / 0.25× starved / 0× paused), independent strategy sleeves with their own P&L books, a pre-trade risk veto chain, and execution with transaction-cost analysis on every fill — all on a replayable provenance record. The XGBoost brain only earns veto power at validation AUC ≥ 0.55, and V15.4's maker-entry mode recovers a measured −1.9% taker spread cost.\n\n**Mission Control** — intentionally tiny contract: the bot writes \`status.json\` every ~20s; the site polls it. "Offline" is just "the file stopped changing," so down/recovery needs no extra wiring.\n\n**WitnessPro** — built on AVCaptureMultiCamSession with sealed metadata so evidence keeps chain-of-custody even when PII is hidden on screen.\n\n**Nexus Bot** — modular signal sources (news/crypto/economics/weather) feeding a Claude-scored decision loop, with a parallel scalper.`,
-        ['Tell me about the V15.4 engine', 'How does Mission Control stay live?', 'How is the evidence organized?', 'What is the full tech stack?']
+        `A few representative engineering decisions:\n\n**Arbiter** — deliberately the opposite design of its predecessor: no ML model, no forecasting, just cross-venue book disagreement between Polymarket and Kalshi, held to settlement. Sized to clear Polymarket's $1-per-order minimum, with abort/unwind safety that held during a real ~$11 incident on 2026-06-18. The predecessor, **Polymarket Engine V15.4**, was structured like a fund — an autonomous governor, a Bayesian capital allocator, independent strategy sleeves, a pre-trade risk veto chain, and an XGBoost brain that only earned veto power at validation AUC ≥ 0.55 — but its pure-prediction approach still lost $1,133 over 16,000 trades, which is why Arbiter exists.\n\n**Mission Control** — intentionally tiny contract: the bot writes \`status.json\` every ~60s; the site polls it. "Offline" is just "the file stopped changing," so down/recovery needs no extra wiring.\n\n**WitnessPro** — built on AVCaptureMultiCamSession with sealed metadata so evidence keeps chain-of-custody even when PII is hidden on screen.\n\n**Nexus Bot** — modular signal sources (news/crypto/economics/weather) feeding a Claude-scored decision loop, with a parallel scalper.`,
+        ['Tell me about Arbiter', 'How does Mission Control stay live?', 'How is the evidence organized?', 'What is the full tech stack?']
       );
 
     case 'evidence':
@@ -142,7 +142,7 @@ function generateResponse({ intent, slug }) {
       const list = Object.entries(byCat).map(([c, names]) => `**${c}:** ${names.join(', ')}`).join('\n');
       return R(
         `Here's the ecosystem — ${projects.length} systems plus WitnessPro (iOS):\n\n${list}\n\nAsk me about any one by name and I'll give you the architecture, highlights, and stack.`,
-        ['Tell me about the V15.4 engine', 'What is Bet Bot / Aviator?', 'Tell me about Nexus Bot', 'Tell me about TryOn']
+        ['Tell me about Arbiter', 'What is Bet Bot / Aviator?', 'Tell me about Nexus Bot', 'Tell me about TryOn']
       );
     }
 
@@ -172,7 +172,7 @@ function generateResponse({ intent, slug }) {
 
     case 'resume':
       return R(
-        `${personal.name.split(' ')[0]}'s résumé downloads in one click — the **Download Résumé (PDF)** button in the Contact section grabs **/resume.pdf** directly, and there's a web version at /resume.html.\n\nIt covers the V15.4 Polymarket trading engine, WitnessPro, the automation ecosystem, security lab experience, CompTIA Security+ and Google certificates, founder experience, and work history. This whole site is the deeper proof; the résumé is the recruiter-friendly summary.`,
+        `${personal.name.split(' ')[0]}'s résumé downloads in one click — the **Download Résumé (PDF)** button in the Contact section grabs **/resume.pdf** directly, and there's a web version at /resume.html.\n\nIt covers the Arbiter cross-venue trading engine, WitnessPro, the automation ecosystem, security lab experience, CompTIA Security+ and Google certificates, founder experience, and work history. This whole site is the deeper proof; the résumé is the recruiter-friendly summary.`,
         ['Is he available to hire?', 'List all projects', 'How do I contact him?']
       );
 
@@ -225,18 +225,16 @@ export function NexusAI() {
         const m = d.metrics || {};
         const f = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
         const money = (n) => (n == null ? '—' : `${n < 0 ? '-' : ''}$${Math.abs(Number(n)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-        const gv = d.governor || {};
-        const lt = d.lifetime || {};
+        const cats = (d.categories || []).map((c) => `${c.category} ${money(c.pnl)}`).join(' · ');
         responseText =
-          `Here's the **V15 system right now** — straight from its live log + trade ledger:\n\n` +
-          `• Status: **${(d.status || '').toUpperCase()}** · mode **${d.mode}**${gv.mode_override === 'paper_forced' ? ' (governor self-demoted to paper until calibration clears)' : ''} · run #${d.run_id}\n` +
-          `• V15 PnL: **${money(m.total_pnl)}** across ${f(m.trades_total)} V15 trades · ${m.win_rate}% win rate\n` +
-          `• PnL today: **${money(m.daily_pnl)}** · live (real-money) PnL: **${money(m.live_pnl)}** over ${f(m.live_trades)} trades\n` +
-          `• Open positions: ${f(m.open_positions)} · bankroll ~${money(m.bankroll_usd)}\n` +
-          `• Calibration: Brier **${m.brier ?? '—'}** vs market ${m.brier_market ?? '—'}${m.brier_skill != null ? ` (skill ${m.brier_skill > 0 ? '+' : ''}${m.brier_skill})` : ''}\n` +
-          `• All-time scale: **${f(lt.markets_scanned ?? m.markets_scanned)}** markets scanned · ${f(lt.trades_total ?? m.trades_total)} recorded trades across ${f(lt.runs_total ?? d.runs_total)} runs\n\n` +
-          `Numbers are scoped to the V15 architecture (the current system) — the all-time line covers every version since v1. Scroll up to **Mission Control** for the full live dashboard.`;
-        chips = ['How is the bot architected?', 'What signals does it run?', 'Is this real?'];
+          `Here's **Arbiter right now** — straight from its live log + trade ledger:\n\n` +
+          `• Status: **${(d.status || '').toUpperCase()}** · mode **LIVE** · real money\n` +
+          `• Net PnL: **${money(m.total_pnl)}** across ${f(m.resolved_total)} resolved trades · ${m.win_rate}% win rate (${f(m.wins)}W · ${f(m.losses)}L)\n` +
+          `• Open positions: ${f(m.open_positions)} · deployed capital ~${money(m.deployed_usd)}\n` +
+          `• By category: ${cats || '—'}\n` +
+          `• Total trades logged: ${f(m.total_trades)}\n\n` +
+          `This is deliberately small — a ~$25 R&D bankroll proving the divergence edge before any capital gets added. Scroll up to **Mission Control** for the full live dashboard.`;
+        chips = ['How is Arbiter architected?', 'What is the strategy?', 'Is this real?'];
       } catch {
         responseText = "I couldn't reach the live feed this second — the Mission Control dashboard at the top of the page has the latest real numbers.";
         chips = ['What is Mission Control?', 'How is the bot architected?'];
