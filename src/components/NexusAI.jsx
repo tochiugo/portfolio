@@ -2,11 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { personal, missionControl, witnessPro, about, socLab, experience, certifications, projects, evidenceRepo, techStack } from '../data/portfolio';
 
 // ATLAS — the portfolio's engineering assistant.
-// Client-side only · no API calls · no data leaves the browser.
-// Its knowledge is DERIVED from the same data module that renders the site, so it
-// always stays aligned with the latest portfolio (projects, architecture, evidence).
+// Primary path: /api/chat (Claude, grounded in real Tochi facts + free-form
+// conversation for everything else). Falls back to this file's rule-based
+// responder — derived from the same data module that renders the site — if
+// the API key isn't configured or the call fails, so the widget never breaks.
 
 const ATLAS = 'ATLAS';
+
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+// word-boundary match — plain .includes() false-positives on substrings
+// (e.g. "bot" inside "robot", "real" inside "really").
+function wordMatch(text, term) { return new RegExp(`\\b${escapeRegex(term)}\\b`, 'i').test(text); }
 
 // ── retrieval: build a keyword index over projects + sections ────────────────
 const PROJECT_KEYWORDS = {
@@ -14,12 +20,13 @@ const PROJECT_KEYWORDS = {
   'polymarket-v3': ['v3', 'latency', 'flash crash', 'late window', 'clob', 'gamma'],
   sniper: ['sniper', 'phase', 'audit', 'reasoning'],
   'bet-bot': ['bet bot', 'aviator', 'crash game', 'sportybet', 'multiplier', 'cash out'],
-  'nexus-bot': ['nexus bot', 'kalshi', 'perigon', 'news', 'weather', 'economics', 'claude scoring', 'scalper'],
+  'nexus-bot': ['nexus bot', 'kalshi', 'perigon', 'claude scoring'],
   'fifteen-min': ['15 minutes', '15 min', 'fifteen', 'streak', 'late entry', 'reaper'],
   sharp: ['sharp', 'scalper', 'reconnect', 'high frequency', 'high-frequency'],
-  sporty: ['sporty', 'sportybot', 'playwright', 'sportybet'],
-  'nexus-drive': ['nexus drive', 'rideshare', 'lyft', 'driver', 'android', 'lax', 'hunter'],
+  sporty: ['sporty', 'sportybot', 'playwright'],
+  'nexus-drive': ['nexus drive', 'rideshare', 'lyft', 'driver', 'lax', 'hunter'],
   tryon: ['tryon', 'try on', 'try-on', 'expo', 'react native', 'wardrobe', 'garment', 'render'],
+  'weather-bot': ['weather bot', 'gefs', 'ecmwf', 'temperature market', 'ensemble forecast'],
 };
 
 function projectBySlug(slug) { return projects.find((p) => p.slug === slug); }
@@ -45,10 +52,10 @@ function classifyIntent(text) {
 
   // direct project match first
   for (const [slug, kws] of Object.entries(PROJECT_KEYWORDS)) {
-    if (kws.some((k) => t.includes(k))) return { intent: 'project', slug };
+    if (kws.some((k) => wordMatch(t, k))) return { intent: 'project', slug };
   }
 
-  const has = (...terms) => terms.some((term) => t.includes(term));
+  const has = (...terms) => terms.some((term) => wordMatch(t, term));
   if (has('how is the bot', 'bot doing', 'how is it doing', 'how is it performing', 'current pnl', 'live pnl', 'live numbers', "pnl", "p&l", 'how much profit', 'how much has', 'bot status', 'doing right now', 'how is the trading')) return { intent: 'bot_status' };
   if (/\b(hi|hello|hey|yo|howdy)\b/.test(t) || has('good morning', 'good afternoon', 'good evening')) return { intent: 'greeting' };
   if (has('thank', 'awesome', 'great', 'perfect', 'nice')) return { intent: 'thanks' };
@@ -78,7 +85,7 @@ function generateResponse({ intent, slug }) {
   switch (intent) {
     case 'greeting':
       return R(
-        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s assistant.\n\nThis is a proof-driven platform. The homepage is a **live** trading dashboard wired to a real bot running 24/7; below it are a shipped iOS app, a home SOC lab, a 10-project ecosystem, his certifications, and his experience as a founder of two companies — all backed by real evidence.\n\nWhat do you want to dig into?`,
+        `Hi — I'm ${ATLAS}, ${personal.name.split(' ')[0]}'s assistant.\n\nThis is a proof-driven platform. The homepage is a **live** trading dashboard wired to a real bot running 24/7; below it are a shipped iOS app, a home SOC lab, a 10-project ecosystem, his certifications, and his experience as a founder of two companies — all backed by real evidence.\n\nAsk me about any of that, or just chat — I'm not limited to Tochi topics.`,
         ["How's the bot doing right now?", 'Tell me about the SOC lab', 'What businesses has he founded?', 'What certifications?']
       );
 
@@ -209,11 +216,29 @@ export function NexusAI() {
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isTyping]);
 
+  // Ask the real Claude-backed endpoint; returns null if unconfigured/unreachable
+  // so the caller can fall back to the rule-based responder.
+  const askAtlas = async (history) => {
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history.slice(-10).map((m) => ({ role: m.role, content: m.content })) }),
+      });
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d.text ? d.text : null;
+    } catch {
+      return null;
+    }
+  };
+
   const sendMessage = async (text) => {
     const msg = text.trim();
     if (!msg || isTyping) return;
     setInput('');
-    setMessages((prev) => [...prev, { role: 'user', content: msg, chips: [] }]);
+    const nextHistory = [...messages, { role: 'user', content: msg, chips: [] }];
+    setMessages(nextHistory);
     setIsTyping(true);
     await new Promise((r) => setTimeout(r, 500 + Math.random() * 400));
     const cls = classifyIntent(msg);
@@ -240,7 +265,13 @@ export function NexusAI() {
         chips = ['What is Mission Control?', 'How is the bot architected?'];
       }
     } else {
-      ({ text: responseText, chips } = generateResponse(cls));
+      const llmText = await askAtlas(nextHistory);
+      if (llmText) {
+        responseText = llmText;
+        chips = [];
+      } else {
+        ({ text: responseText, chips } = generateResponse(cls));
+      }
     }
     setMessages((prev) => [...prev, { role: 'assistant', content: responseText, chips }]);
     setIsTyping(false);
@@ -293,7 +324,7 @@ export function NexusAI() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2"><span className="font-bold text-white text-sm">{ATLAS}</span><span className="font-mono text-xs text-zinc-600 truncate">Engineering Assistant</span></div>
-              <div className="flex items-center gap-1.5 mt-0.5"><span className="w-1.5 h-1.5 rounded-full bg-[#00E87A] animate-pulse" /><span className="font-mono text-xs text-[#00E87A]">Online · Client-side only</span></div>
+              <div className="flex items-center gap-1.5 mt-0.5"><span className="w-1.5 h-1.5 rounded-full bg-[#00E87A] animate-pulse" /><span className="font-mono text-xs text-[#00E87A]">Online</span></div>
             </div>
             <button onClick={() => setIsOpen(false)} className="p-1.5 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5" aria-label="Close chat">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -339,7 +370,7 @@ export function NexusAI() {
             <div className="flex items-center gap-2">
               <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); } }}
-                placeholder="Ask about Mission Control, projects, architecture…"
+                placeholder="Ask about the projects, or anything else…"
                 className="flex-1 px-3.5 py-2.5 bg-zinc-800 border border-white/10 rounded-xl text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#00E87A]/40 transition-colors" />
               <button onClick={() => sendMessage(input)} disabled={!input.trim() || isTyping}
                 className="p-2.5 bg-[#00E87A] hover:bg-[#00E87A]/90 disabled:bg-zinc-700 disabled:text-zinc-500 text-black rounded-xl transition-all flex-shrink-0" aria-label="Send">

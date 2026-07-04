@@ -32,14 +32,6 @@ function getTimestamp() {
   return new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-const SIMULATED_SESSIONS = [
-  { location: 'San Francisco, CA', browser: 'Chrome', os: 'macOS', device: 'Desktop', ago: '2m ago' },
-  { location: 'New York, NY', browser: 'Safari', os: 'iOS', device: 'Mobile', ago: '5m ago' },
-  { location: 'Austin, TX', browser: 'Firefox', os: 'Windows 11', device: 'Desktop', ago: '11m ago' },
-  { location: 'Seattle, WA', browser: 'Edge', os: 'Windows 11', device: 'Desktop', ago: '18m ago' },
-  { location: 'Boston, MA', browser: 'Chrome', os: 'Linux', device: 'Desktop', ago: '34m ago' },
-];
-
 export function VisitorTelemetry() {
   const [session, setSession] = useState(null);
   const [sessionTime, setSessionTime] = useState(0);
@@ -86,8 +78,7 @@ export function VisitorTelemetry() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Current session */}
+      <div className="max-w-md">
         <div className="bg-zinc-900/50 border border-[#00E87A]/20 rounded-2xl overflow-hidden">
           <div className="flex items-center gap-2 px-5 py-3 border-b border-white/10 bg-[#00E87A]/5">
             <span className="relative flex h-2 w-2">
@@ -136,32 +127,9 @@ export function VisitorTelemetry() {
             )}
           </div>
         </div>
-
-        {/* Simulated recent sessions */}
-        <div className="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-zinc-800/30">
-            <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">Recent Analyst Sessions</span>
-            <span className="font-mono text-xs text-zinc-600">Simulated</span>
-          </div>
-          <div className="divide-y divide-white/5">
-            {SIMULATED_SESSIONS.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-5 py-3 hover:bg-zinc-800/20 transition-colors">
-                <div className="w-2 h-2 rounded-full bg-zinc-600 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="font-mono text-xs text-zinc-300">{s.device} · {s.browser} · {s.os}</div>
-                  <div className="font-mono text-xs text-zinc-600">{s.location}</div>
-                </div>
-                <span className="font-mono text-xs text-zinc-600 flex-shrink-0">{s.ago}</span>
-              </div>
-            ))}
-          </div>
-          <div className="px-5 py-3 border-t border-white/10">
-            <div className="font-mono text-xs text-zinc-600 text-center">
-              Demo data · For illustration only · Not real visitor tracking
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
 }
+
+export default VisitorTelemetry;

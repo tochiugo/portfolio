@@ -8,7 +8,6 @@ import { WitnessProSection } from './components/WitnessProSection';
 import { SocLab } from './components/SocLab';
 import { SocConsole } from './components/SocConsole';
 import { NexusSection } from './components/NexusSection';
-import { SOCTelemetryFeed } from './components/soc-tools/SOCTelemetryFeed';
 import { ProjectEcosystem } from './components/ProjectEcosystem';
 import { Experience } from './components/Experience';
 import { Certifications } from './components/Certifications';
@@ -104,10 +103,9 @@ export default function App() {
       {/* SOC LAB */}
       <section id="soc-lab" className="py-24 border-b border-white/10"><ErrorBoundary name="soc-lab"><Reveal><SocLab /></Reveal></ErrorBoundary></section>
 
-      {/* SOC CONSOLE — interactive lab tools */}
+      {/* SECURITY TOOLKIT — real tools, real writing */}
       <section id="soc-console" className="py-24 border-b border-white/10">
-        <ErrorBoundary name="soc-telemetry"><SOCTelemetryFeed /></ErrorBoundary>
-        <div className="pt-16"><ErrorBoundary name="soc-console"><Reveal><SocConsole /></Reveal></ErrorBoundary></div>
+        <ErrorBoundary name="soc-console"><Reveal><SocConsole /></Reveal></ErrorBoundary>
       </section>
 
       {/* NEXUS — confidential, public-safe teaser */}

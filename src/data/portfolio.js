@@ -55,7 +55,7 @@ export const nav = [
   { id: 'mission-control', label: 'Mission Control' },
   { id: 'witnesspro', label: 'WitnessPro' },
   { id: 'soc-lab', label: 'SOC Lab' },
-  { id: 'soc-console', label: 'SOC Console' },
+  { id: 'soc-console', label: 'Toolkit' },
   { id: 'nexus', label: 'Nexus' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
@@ -299,20 +299,22 @@ export const certifications = {
 export const nexus = {
   slug: 'nexus',
   name: 'Nexus Ecosystem',
-  tagline: 'A digital-human platform. Most of it stays behind the curtain.',
+  tagline: 'A three-layer platform. Most of it stays behind the curtain.',
   status: 'Confidential · public-safe surface only',
   summary:
-    "Nexus is an in-progress digital-human ecosystem — body capture, twin creation, and an agentic " +
-    "interface layer. The architecture and specifications are confidential. What's shown here is the " +
-    "public-safe prototype surface only: enough to convey the product direction, nothing sensitive.",
-  publicConcepts: ['Digital Human', 'Body Capture', 'Twin Creation', 'Public UI Concepts'],
+    "Nexus is a three-layer platform under Meridian Nexus Global LLC: Layer 1 is digital identity " +
+    "(body capture, twin creation, an agentic interface layer), Layer 2 is a healthcare system built on " +
+    "the same identity layer, and Layer 3 is AI diagnostics trained on what Layer 2 collects. The " +
+    "architecture and specifications are confidential. What's shown here is the public-safe prototype " +
+    "surface only: enough to convey the product direction, nothing sensitive.",
+  publicConcepts: ['Digital Human', 'Body Capture', 'Twin Creation', 'Healthcare Layer', 'AI Diagnostics (planned)'],
   images: ['/evidence/nexus/01.png', '/evidence/nexus/02.png', '/evidence/nexus/03.png'],
   captions: [
     'Public prototype — the Nexus "Create your Digital Human" concept shell.',
     'Concept navigation — the digital-human capture and twin-creation surface.',
     'Onboarding concept — ownership and privacy framing for a personal digital twin.',
   ],
-  withheld: ['Confidential architecture', 'Internal specifications', 'Capture pipeline', 'Strategy & roadmap'],
+  withheld: ['Confidential architecture', 'Internal specifications', 'Capture pipeline', 'Healthcare data model', 'Strategy & roadmap'],
 };
 
 // ── Project ecosystem (curated galleries) ───────────────────────────────────
@@ -511,7 +513,7 @@ export const projects = [
     slug: 'nexus-drive',
     name: 'Nexus Drive',
     category: 'Automation',
-    status: 'Operational',
+    status: 'Prototype',
     published: true,
     tagline: 'Rideshare-driver automation with on-device Android control.',
     stack: ['Python', 'Android device control', 'live-map logic', 'logging'],
@@ -550,6 +552,28 @@ export const projects = [
       'Result — render workflow with credit metering and save/share.',
       'Wardrobe — saved garments and renders.',
     ],
+  },
+  {
+    slug: 'weather-bot',
+    name: 'Weather Bot',
+    category: 'Trading System',
+    status: 'Prototype',
+    published: false,
+    tagline: 'Multi-model ensemble forecasting vs. Polymarket temperature markets.',
+    stack: ['Python', 'NOAA GEFS', 'ECMWF', 'ICON', 'GEM', 'SQLite'],
+    summary:
+      "Scans Polymarket's daily high/low temperature markets across a city universe, builds a probabilistic " +
+      "forecast from a pooled weather-model ensemble (GEFS, ECMWF, ICON, GEM via Open-Meteo, cross-checked " +
+      "against NWS), and compares it to the market's implied probability. Station-specific — a market " +
+      "resolves on one weather station, so the model queries that exact station, not the city centroid.",
+    highlights: [
+      '7-module pipeline: discovery, forecast, edge, sizing, execution, tracking, alerts',
+      'Station-level precision — exact resolution station, not city centroid',
+      "Feeds Arbiter's weather-divergence category, its best-performing signal to date",
+    ],
+    metrics: [{ label: 'Mode', value: 'Paper' }, { label: 'Models', value: '4-way ensemble' }],
+    images: [],
+    captions: [],
   },
 ];
 
